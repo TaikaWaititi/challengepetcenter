@@ -66,7 +66,7 @@ public class DiarioEntradaController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<DiarioEntradaResponseDTO> entradas = diarioEntradaService.listarTodos(pageable);
+        Page<DiarioEntradaResponseDTO> entradas = diarioEntradaService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(entradas);
     }
 
@@ -107,7 +107,7 @@ public class DiarioEntradaController {
             ) Pageable pageable
     ) {
 
-        Page<DiarioEntradaResponseDTO> entradas = diarioEntradaService.buscarPorData(data, pageable);
+        Page<DiarioEntradaResponseDTO> entradas = diarioEntradaService.buscarPorData(data, PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(entradas);
     }
 

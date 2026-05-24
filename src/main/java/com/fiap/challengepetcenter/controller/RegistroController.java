@@ -66,7 +66,7 @@ public class RegistroController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<RegistroResponseDTO> registros = registroService.listarTodos(pageable);
+        Page<RegistroResponseDTO> registros = registroService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(registros);
     }
 

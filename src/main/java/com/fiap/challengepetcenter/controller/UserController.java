@@ -66,7 +66,7 @@ public class UserController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<UserResponseDTO> users = userService.listarTodos(pageable);
+        Page<UserResponseDTO> users = userService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(users);
     }
 

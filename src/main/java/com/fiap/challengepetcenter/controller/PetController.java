@@ -66,7 +66,7 @@ public class PetController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<PetResponseDTO> pets = petService.listarTodos(pageable);
+        Page<PetResponseDTO> pets = petService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(pets);
     }
 
@@ -113,7 +113,7 @@ public class PetController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<PetResponseDTO> pets = petService.buscarPorUserId(userId, pageable);
+        Page<PetResponseDTO> pets = petService.buscarPorUserId(userId, PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(pets);
     }
 
@@ -138,7 +138,7 @@ public class PetController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<PetResponseDTO> pets = petService.buscarPorNome(nome, pageable);
+        Page<PetResponseDTO> pets = petService.buscarPorNome(nome, PageableUtils.comOrdenacaoPadrao(pageable));
         return ResponseEntity.ok(pets);
     }
 
