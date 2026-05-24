@@ -2,34 +2,39 @@ package com.fiap.challengepetcenter.service;
 
 import com.fiap.challengepetcenter.DTO.PetRequestDTO;
 import com.fiap.challengepetcenter.DTO.PetResponseDTO;
+import com.fiap.challengepetcenter.exception.DiarioEntradaComDependenciasException;
+import com.fiap.challengepetcenter.exception.PetNaoEncontradoException;
+import com.fiap.challengepetcenter.exception.UserNaoEncontradoException;
 import com.fiap.challengepetcenter.model.Pet;
 import com.fiap.challengepetcenter.model.User;
+import com.fiap.challengepetcenter.repository.DiarioEntradaRepository;
 import com.fiap.challengepetcenter.repository.PetRepository;
-
 import com.fiap.challengepetcenter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.cache.annotation.Cacheable;
 
 @Service
 public class PetService {
 
     private final PetRepository petRepository;
     private final UserRepository userRepository;
+    private final DiarioEntradaRepository diarioEntradaRepository;
 
     @Autowired
-    public PetService(PetRepository petRepository, UserRepository userRepository) {
+    public PetService(PetRepository petRepository, UserRepository userRepository, DiarioEntradaRepository diarioEntradaRepository) {
         this.petRepository = petRepository;
         this.userRepository = userRepository;
+        this.diarioEntradaRepository = diarioEntradaRepository;
     }
 
     @Transactional
     public PetResponseDTO salvar(PetRequestDTO requestDTO) {
         User user = userRepository.findById(requestDTO.userId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new UserNaoEncontradoException("Usuário não encontrado com ID: " + requestDTO.userId()));
 
         Pet pet = new Pet();
         pet.setUser(user);
@@ -45,46 +50,39 @@ public class PetService {
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponseDTO> listarTodos() {
-        List<Pet> pets = petRepository.findAll();
-
-        return pets.stream()
-                .map(PetResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+    public Page<PetResponseDTO> listarTodos(Pageable pageable) {
+        return petRepository.findAll(pageable)
+                .map(PetResponseDTO::fromEntity);
     }
 
     @Transactional(readOnly = true)
     public PetResponseDTO buscarPorId(Long id) {
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pet não encontrado"));
+                .orElseThrow(() -> new PetNaoEncontradoException("Pet não encontrado com ID: " + id));
         return PetResponseDTO.fromEntity(pet);
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponseDTO> buscarPorUserId(Long userId) {
+    public Page<PetResponseDTO> buscarPorUserId(Long userId, Pageable pageable) {
 
-        List<Pet> pets = petRepository.findByUserId(userId);
-        return pets.stream()
-                .map(PetResponseDTO::fromEntity)
-                .toList();
+        return petRepository.findByUserId(userId, pageable)
+                .map(PetResponseDTO::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponseDTO> buscarPorNome(String nome) {
+    public Page<PetResponseDTO> buscarPorNome(String nome, Pageable pageable) {
 
-        List<Pet> pets = petRepository.findByNome(nome);
-        return pets.stream()
-                .map(PetResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+        return petRepository.findByNomeContaining(nome, pageable)
+                .map(PetResponseDTO::fromEntity);
     }
 
     @Transactional
     public PetResponseDTO atualizar(Long id, PetRequestDTO requestDTO) {
         Pet petExistente = petRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pet não encontrado"));
+                .orElseThrow(() -> new PetNaoEncontradoException("Pet não encontrado com ID: " + id));
 
         User user = userRepository.findById(requestDTO.userId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new UserNaoEncontradoException("Usuário não encontrado com ID: " + requestDTO.userId()));
 
         petExistente.setUser(user);
         petExistente.setNome(requestDTO.nome());
@@ -101,8 +99,13 @@ public class PetService {
     @Transactional
     public void deletar(Long id) {
         if (!petRepository.existsById(id)) {
-            throw new RuntimeException("Pet não encontrado");
+            throw new PetNaoEncontradoException("Pet não encontrado com ID: " + id);
+        }
+
+        if (diarioEntradaRepository.existsByPetId(id)) {
+            throw new DiarioEntradaComDependenciasException("Não é possível excluir o pet pois existem entradas de diário vinculadas a ele");
         }
         petRepository.deleteById(id);
+
     }
 }

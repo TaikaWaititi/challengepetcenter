@@ -2,6 +2,8 @@ package com.fiap.challengepetcenter.DTO;
 
 import com.fiap.challengepetcenter.model.User;
 
+import java.time.LocalDateTime;
+
 public record UserResponseDTO(
 
         Long id,
@@ -9,7 +11,9 @@ public record UserResponseDTO(
         String email,
         String telefone,
         String tipoUsuario,
-        boolean ativo
+        boolean ativo,
+        LocalDateTime dataCriacao
+
 ) {
 
     public static UserResponseDTO fromEntity(User user) {
@@ -19,7 +23,8 @@ public record UserResponseDTO(
                 user.getEmail(),
                 user.getTelefone(),
                 user.getTipoUsuario(),
-                user.getAtivo()
+                user.getAtivo(),
+                user.getDataCriacao()
         );
     }
 }

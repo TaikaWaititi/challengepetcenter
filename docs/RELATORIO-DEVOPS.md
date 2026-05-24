@@ -29,7 +29,7 @@ Equipe:
 
 ## 1. Descricao da solucao
 
-O Challenge PetCenter e uma API REST em Java com Spring Boot voltada para continuidade do cuidado de pets. A aplicacao permite cadastrar tutores, pets, entradas de diario e registros de acompanhamento, apoiando uma jornada mais continua, preventiva e organizada.
+O Challenge PetCenter e uma API REST em Java com Spring Boot voltada para continuidade do cuidado de pets. A aplicacao permite cadastrar tutores, pets, entradas de diario e registros de acompanhamento, apoiando uma jornada mais continua, preventiva e organizada. Esta versao considera a base atualizada do projeto JavaFinal, com validacao, Swagger documentado, paginacao e recursos de cache.
 
 ## 2. Arquitetura macro
 
@@ -66,7 +66,7 @@ A solucao usa:
 - Container `petcenter-api` para a aplicacao.
 - Container `petcenter-h2db` para o banco.
 - Volume nomeado `h2-data` para persistencia.
-- Multi-stage build e `jlink` para reduzir a imagem da API de aproximadamente `575MB` para `234MB`.
+- Multi-stage build e `jlink` para manter a imagem da API em aproximadamente `234MB`, abaixo de `400MB`.
 
 ## 4. Script Azure CLI
 
@@ -91,6 +91,7 @@ Testes locais realizados com sucesso:
 - `POST /api/pets`: cadastro de pet.
 - `POST /api/diarioentradas`: cadastro de entrada de diario.
 - `POST /api/registros`: cadastro de registro de cuidado.
+- Listagens paginadas em `GET /api/users`, `GET /api/pets`, `GET /api/diarioentradas` e `GET /api/registros`.
 
 Dados usados no teste:
 

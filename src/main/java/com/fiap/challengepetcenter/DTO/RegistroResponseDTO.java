@@ -1,9 +1,8 @@
 package com.fiap.challengepetcenter.DTO;
 
-import com.fiap.challengepetcenter.model.DiarioEntrada;
 import com.fiap.challengepetcenter.model.Registro;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record RegistroResponseDTO(
 
@@ -13,7 +12,10 @@ public record RegistroResponseDTO(
         String subtipo,
         Double valor,
         String unidade,
-        String nota
+        String nota,
+        LocalDateTime horario,
+        LocalDateTime atualizadoEm
+
 ) {
 
     public static RegistroResponseDTO fromEntity(Registro registro) {
@@ -24,7 +26,9 @@ public record RegistroResponseDTO(
                 registro.getSubtipo(),
                 registro.getValor(),
                 registro.getUnidade(),
-                registro.getNota()
+                registro.getNota(),
+                registro.getHorario(),
+                registro.getAtualizadoEm()
         );
     }
 }

@@ -1,34 +1,41 @@
 package com.fiap.challengepetcenter.service;
 
-import com.fiap.challengepetcenter.DTO.*;
+import com.fiap.challengepetcenter.DTO.DiarioEntradaRequestDTO;
+import com.fiap.challengepetcenter.DTO.DiarioEntradaResponseDTO;
+import com.fiap.challengepetcenter.exception.DiarioEntradaNaoEncontradoException;
+import com.fiap.challengepetcenter.exception.PetNaoEncontradoException;
+import com.fiap.challengepetcenter.exception.RegistroComDependenciasException;
 import com.fiap.challengepetcenter.model.DiarioEntrada;
 import com.fiap.challengepetcenter.model.Pet;
 import com.fiap.challengepetcenter.repository.DiarioEntradaRepository;
 import com.fiap.challengepetcenter.repository.PetRepository;
+import com.fiap.challengepetcenter.repository.RegistroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DiarioEntradaService {
 
     private final DiarioEntradaRepository diarioEntradaRepository;
     private final PetRepository petRepository;
+    private final RegistroRepository registroRepository;
 
     @Autowired
-    public DiarioEntradaService(DiarioEntradaRepository diarioEntradaRepository, PetRepository petRepository) {
+    public DiarioEntradaService(DiarioEntradaRepository diarioEntradaRepository, PetRepository petRepository, RegistroRepository registroRepository) {
         this.diarioEntradaRepository = diarioEntradaRepository;
         this.petRepository = petRepository;
+        this.registroRepository = registroRepository;
     }
 
     @Transactional
     public DiarioEntradaResponseDTO salvar(DiarioEntradaRequestDTO requestDTO) {
         Pet pet = petRepository.findById(requestDTO.petId())
-                .orElseThrow(() -> new RuntimeException("Pet não encontrado"));
+                .orElseThrow(() -> new PetNaoEncontradoException("Pet não encontrado com ID: " + requestDTO.petId()));
 
         DiarioEntrada diarioEntrada = new DiarioEntrada();
         diarioEntrada.setPet(pet);
@@ -44,37 +51,34 @@ public class DiarioEntradaService {
 
 
     @Transactional(readOnly = true)
-    public List<DiarioEntradaResponseDTO> listarTodos() {
-        List<DiarioEntrada> entradas = diarioEntradaRepository.findAll();
+    public Page<DiarioEntradaResponseDTO> listarTodos(Pageable pageable) {
+        Page<DiarioEntrada> entradas = diarioEntradaRepository.findAll(pageable);
 
-        return entradas.stream()
-                .map(DiarioEntradaResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+        return entradas.map(DiarioEntradaResponseDTO::fromEntity);
+
     }
 
     @Transactional(readOnly = true)
     public DiarioEntradaResponseDTO buscarPorId(Long id) {
         DiarioEntrada diarioEntrada = diarioEntradaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DiarioEntrada não encontrado"));
+                .orElseThrow(() -> new DiarioEntradaNaoEncontradoException("DiarioEntrada não encontrado com ID: " + id));
         return DiarioEntradaResponseDTO.fromEntity(diarioEntrada);
     }
 
     @Transactional(readOnly = true)
-    public List<DiarioEntradaResponseDTO> buscarPorData(LocalDate data) {
-        List<DiarioEntrada> entradas = diarioEntradaRepository.findByData(data);
+    public Page<DiarioEntradaResponseDTO> buscarPorData(LocalDate data, Pageable pageable) {
+        Page<DiarioEntrada> entradas = diarioEntradaRepository.findByData(data, pageable);
 
-        return entradas.stream()
-                .map(DiarioEntradaResponseDTO::fromEntity)
-                .toList();
+        return entradas.map(DiarioEntradaResponseDTO::fromEntity);
     }
 
     @Transactional
     public DiarioEntradaResponseDTO atualizar(Long id, DiarioEntradaRequestDTO requestDTO) {
         DiarioEntrada diarioEntradaExistente = diarioEntradaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("DiarioEntrada não encontrado"));
+                .orElseThrow(() -> new DiarioEntradaNaoEncontradoException("DiarioEntrada não encontrado com ID: " + id));
 
         Pet pet = petRepository.findById(requestDTO.petId())
-                .orElseThrow(() -> new RuntimeException("Pet não encontrado"));
+                .orElseThrow(() -> new PetNaoEncontradoException("Pet não encontrado com ID: " + requestDTO.petId()));
 
         diarioEntradaExistente.setPet(pet);
         diarioEntradaExistente.setData(requestDTO.data());
@@ -92,8 +96,13 @@ public class DiarioEntradaService {
     @Transactional
     public void deletar(Long id) {
         if (!diarioEntradaRepository.existsById(id)) {
-            throw new RuntimeException("DiarioEntrada não encontrado");
+            throw new DiarioEntradaNaoEncontradoException("DiarioEntrada não encontrado com ID: " + id);
         }
+
+        if (registroRepository.existsById(id)) {
+            throw new RegistroComDependenciasException("Não é possível excluir o pet pois existem DiarioEntradas vinculados a ele");
+        }
+
         diarioEntradaRepository.deleteById(id);
     }
 }

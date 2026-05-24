@@ -1,6 +1,6 @@
 # Challenge PetCenter
 
-API REST em Java com Spring Boot para apoiar a continuidade do cuidado de pets. A solucao permite cadastrar tutores, pets, entradas de diario de acompanhamento e registros de eventos como alimentacao, humor, observacoes e status de saude.
+API REST em Java com Spring Boot para acompanhamento diario da saude, humor e rotina de pets. A solucao apoia a continuidade do cuidado veterinario por meio do cadastro de tutores, pets, entradas de diario e registros estruturados de eventos relevantes.
 
 ## Equipe
 
@@ -12,17 +12,63 @@ API REST em Java com Spring Boot para apoiar a continuidade do cuidado de pets. 
 | Mariana Xavier Quispe | RM566357 |
 | Julia Tiziotto Buttler | RM564975 |
 
+## Objetivo do Projeto
+
+O projeto foi desenvolvido para o Challenge proposto pela Clyvo/FIAP. O objetivo e transformar registros cotidianos do pet em informacoes organizadas e consultaveis, permitindo identificar possiveis anomalias comportamentais e apoiar a busca por cuidado veterinario antes que um problema se agrave.
+
+A proposta vai alem de um CRUD simples, permitindo:
+
+- registro continuo da rotina do pet;
+- organizacao em linha do tempo;
+- persistencia estruturada dos dados;
+- apoio ao acompanhamento veterinario;
+- futura geracao de insights clinicos.
+
 ## Beneficios para o negocio
 
 - Centraliza dados importantes da jornada de saude do pet.
 - Ajuda tutores e clinicas a acompanharem historico, rotina e evolucao do animal.
-- Facilita a continuidade do cuidado, reduzindo perda de informacoes entre consultas.
+- Facilita a continuidade do cuidado e reduz perda de informacoes entre consultas.
 - Cria base de dados para futuras recomendacoes, alertas e analises clinicas.
+- Aumenta potencial de recorrencia e fidelizacao para clinicas veterinarias.
+
+## Tecnologias Utilizadas
+
+- Java 21
+- Spring Boot
+- Spring Data JPA
+- Spring Cache
+- Bean Validation
+- Maven
+- H2 Database
+- Hibernate
+- Swagger/OpenAPI
+- Docker
+- Docker Compose
+- Azure CLI
+- Azure Virtual Machine Linux
+
+## Estrutura do Projeto
+
+```text
+Controller -> Service -> Repository -> Banco de Dados
+```
+
+```text
+src/main/java/com/fiap/challengepetcenter
+    controller
+    DTO
+    exception
+    model
+    repository
+    service
+    ChallengepetcenterApplication.java
+```
 
 ## Arquitetura macro
 
 ```text
-Usuario / Postman / Insomnia
+Usuario / Postman / Insomnia / Swagger
         |
         v
 Internet - IP publico da Azure VM
@@ -34,29 +80,54 @@ Portas: 22, 8080, 81
         v
 Azure VM Linux Ubuntu
         |
-        +--> Container petcenter-api
-        |       Spring Boot + Java 21
-        |       Porta 8080
-        |
-        +--> Container petcenter-h2db
-                Banco H2
-                Console Web na porta 81
-                Volume nomeado h2-data
+        +--> Docker Engine
+              |
+              +--> Container petcenter-api
+              |       Spring Boot + Java 21
+              |       Porta 8080
+              |       Usuario nao-root: spring
+              |
+              +--> Container petcenter-h2db
+                      Banco H2
+                      Console Web na porta 81
+                      Volume nomeado h2-data
 ```
 
-## Tecnologias
+## Funcionalidades Implementadas
 
-- Java 21
-- Spring Boot
-- Spring Web MVC
-- Spring Data JPA
-- Bean Validation
-- H2 Database
-- Swagger/OpenAPI
-- Docker
-- Docker Compose
-- Azure CLI
-- Azure Virtual Machine Linux
+### Usuarios
+
+- Cadastro de usuarios.
+- Busca de usuarios.
+- Busca por email.
+- Atualizacao de usuarios.
+- Remocao de usuarios.
+- Listagem paginada.
+
+### Pets
+
+- Cadastro de pets.
+- Relacionamento entre tutor e pet.
+- Busca de pets.
+- Busca por tutor.
+- Busca por nome.
+- Atualizacao de pets.
+- Remocao de pets.
+- Listagem paginada.
+
+### Diario de Entradas
+
+- Registro diario da rotina do pet.
+- Organizacao temporal das informacoes.
+- Consulta por data.
+- Resumos e observacoes gerais.
+- Listagem paginada.
+
+### Registros
+
+- Registro estruturado de alimentacao, comportamento, sintomas e atividades.
+- Atualizacao e remocao dos registros.
+- Listagem paginada.
 
 ## Rotas principais
 
@@ -96,44 +167,43 @@ Azure VM Linux Ubuntu
 - `PUT /api/registros/{id}`
 - `DELETE /api/registros/{id}`
 
-## Como executar na Azure
+## Swagger
 
-1. Publique este projeto em um repositorio publico no GitHub.
-2. Abra o arquivo `DevOps.sh`.
-3. Altere a variavel `GITHUB_REPO_URL` para o link do repositorio do grupo.
-4. Execute no Azure Cloud Shell:
-
-```bash
-chmod +x DevOps.sh
-./DevOps.sh
-```
-
-O script executa em sequencia:
-
-- Cria o Resource Group.
-- Cria uma VM Linux Ubuntu.
-- Abre as portas `22`, `8080` e `81`.
-- Instala Docker, Docker Compose, Git, nano e unzip.
-- Cria o usuario `appuser`.
-- Clona o repositorio.
-- Executa a aplicacao e o banco com Docker Compose em background.
-
-Ao final, a API ficara disponivel em:
+Com o projeto em execucao:
 
 ```text
-http://IP_PUBLICO:8080
+http://localhost:8080/swagger-ui.html
 ```
 
-Swagger:
+Na Azure, substituir `localhost` pelo IP publico da VM:
 
 ```text
 http://IP_PUBLICO:8080/swagger-ui.html
 ```
 
+## Como executar localmente com Docker
+
+```bash
+docker compose up -d --build
+docker compose ps
+```
+
+API:
+
+```text
+http://localhost:8080
+```
+
+Swagger:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
 Console H2:
 
 ```text
-http://IP_PUBLICO:81
+http://localhost:81
 ```
 
 No console H2, use:
@@ -144,65 +214,73 @@ User Name: sa
 Password:
 ```
 
+## Como executar na Azure
+
+1. Publique este projeto em um repositorio publico no GitHub.
+2. Confirme se o `DevOps.sh` esta apontando para o repositorio correto.
+3. Execute no Azure Cloud Shell:
+
+```bash
+chmod +x DevOps.sh
+./DevOps.sh
+```
+
+O script executa em sequencia:
+
+- cria o Resource Group;
+- cria uma VM Linux Ubuntu;
+- abre as portas `22`, `8080` e `81`;
+- instala Docker, Docker Compose, Git, nano e unzip;
+- cria o usuario `appuser`;
+- clona o repositorio;
+- executa API e banco com Docker Compose em background.
+
 ## Docker
 
-Executar manualmente:
+O projeto possui:
 
-```bash
-docker compose up -d --build
-```
-
-Ver containers:
-
-```bash
-docker compose ps
-```
-
-Ver logs:
-
-```bash
-docker compose logs -f app
-```
-
-Parar:
-
-```bash
-docker compose down
-```
+- `Dockerfile`: cria a imagem da API Java.
+- `docker-compose.yml`: sobe API e H2 em containers separados.
+- `DevOps.sh`: provisiona a infraestrutura Azure com Azure CLI.
 
 ### Otimizacao da imagem
 
-O `Dockerfile` usa multi-stage build e `jlink` para gerar um runtime Java customizado. Com isso, a imagem da API foi reduzida de aproximadamente `575MB` para `234MB`, ficando abaixo da meta de `400MB`.
+O `Dockerfile` usa multi-stage build e `jlink` para gerar um runtime Java customizado. Com isso, a imagem da API fica abaixo de `400MB`.
 
 ## Persistencia do banco
 
-O banco H2 usa o volume nomeado `h2-data`.
+O banco H2 roda em container separado e usa o volume nomeado `h2-data`.
 
 Para demonstrar persistencia:
 
-1. Cadastre pelo menos dois registros pela API.
-2. Execute `docker compose down`.
-3. Execute `docker compose up -d`.
-4. Consulte os dados novamente pela API ou pelo H2 Console.
+```bash
+docker compose down
+docker compose up -d
+curl http://localhost:8080/api/users
+```
 
-## Evidencias de teste local
+Os dados devem continuar disponiveis apos a recriacao dos containers.
 
-Testes realizados em Docker local antes do deploy em nuvem:
+## Teste automatizado local
 
-- `docker compose up -d --build`: API e H2 subiram em background.
-- `docker compose ps`: containers `petcenter-api` e `petcenter-h2db` ficaram com status `Up`.
-- `docker inspect petcenter-api --format "Container user: {{.Config.User}}"`: retornou `spring`, comprovando execucao sem usuario root.
-- `docker volume ls --filter name=challengepetcenter_h2-data`: comprovou o volume nomeado `challengepetcenter_h2-data`.
-- CRUD validado com `POST`, `GET`, `PUT` e `DELETE` em `/api/users`.
-- Inserts significativos validados tambem em `/api/pets`, `/api/diarioentradas` e `/api/registros`.
-- Persistencia validada apos `docker compose down` e `docker compose up -d`, com os registros ainda disponiveis pela API.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\test-devops-local.ps1
+```
+
+O script cria usuarios, pet, entrada de diario e registro, validando os principais endpoints.
 
 ## Evidencia obrigatoria de exclusao da VM
 
-Ao final da apresentacao, remova os recursos para evitar gasto de creditos:
+Ao final da apresentacao, remova os recursos:
 
 ```bash
 az group delete --name rg-petcenter --yes --no-wait
 ```
 
-Tire print da exclusao no portal Azure ou do comando executado, pois o PDF exige evidencia da remocao da VM e dos recursos em nuvem.
+Inclua no PDF final o print da exclusao da VM e dos recursos em nuvem.
+
+## Repositorio
+
+```text
+https://github.com/TaikaWaititi/challengepetcenter
+```

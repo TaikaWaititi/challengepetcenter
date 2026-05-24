@@ -1,8 +1,10 @@
 package com.fiap.challengepetcenter.DTO;
 
 import com.fiap.challengepetcenter.model.DiarioEntrada;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record DiarioEntradaResponseDTO(
         Long id,
@@ -11,7 +13,10 @@ public record DiarioEntradaResponseDTO(
         LocalDate data,
         String resumo,
         String humorGeral,
-        String status
+        String status,
+
+        LocalDateTime criadoEm,
+        LocalDateTime atualizadoEm
 ) {
 
     public static DiarioEntradaResponseDTO fromEntity(DiarioEntrada diarioEntrada) {
@@ -22,7 +27,10 @@ public record DiarioEntradaResponseDTO(
                 diarioEntrada.getData(),
                 diarioEntrada.getResumo(),
                 diarioEntrada.getHumorGeral(),
-                diarioEntrada.getStatus()
+                diarioEntrada.getStatus(),
+
+                diarioEntrada.getCriadoEm(),
+                diarioEntrada.getAtualizadoEm()
         );
     }
 }

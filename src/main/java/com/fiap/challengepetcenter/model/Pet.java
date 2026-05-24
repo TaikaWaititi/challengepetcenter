@@ -1,5 +1,6 @@
 package com.fiap.challengepetcenter.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,24 +8,59 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "pets")
+@Schema(
+        name = "Pet",
+        description = "Representa um pet associado a um ususário no sistema API PetCenter"
+)
 public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(
+            description = "ID único do pet",
+            example = "1",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull(message = "O tutor é obrigatório")
+    @NotNull(message = "O tutorId é obrigatório")
+    @Schema(
+            description = "Tutor responsável pelo pet",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
     private User user;
 
     @Column(nullable = false)
+    @Schema(
+            description = "Nome do pet",
+            example = "Luna"
+    )
     private String nome;
 
     @Column(nullable = false)
+    @Schema(
+            description = "Espécie do pet",
+            example = "Cachorro"
+    )
     private String especie;
 
+
+    @Schema(
+            description = "Raça do pet",
+            example = "Golden Retriever"
+    )
     private String raca;
+    @Schema(
+            description = "Data de nascimento do pet",
+            example = "2022-03-15"
+    )
     private LocalDate dataNascimento;
+
+    @Schema(
+            description = "Observações adicionais sobre o pet",
+            example = "Pet alérgico a determinados alimentos"
+    )
     private String observacoes;
 
     public Pet() {

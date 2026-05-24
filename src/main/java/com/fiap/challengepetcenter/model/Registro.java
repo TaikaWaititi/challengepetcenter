@@ -1,5 +1,6 @@
 package com.fiap.challengepetcenter.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,26 +8,71 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "resgistros")
+@Table(name = "registros")
+@Schema(
+        name = "Registro",
+        description = "Representa um registro associado a uma entrada no diário no sistema API PetCenter"
+)
 public class Registro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(
+            description = "ID único do registro",
+            example = "1",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    @NotNull(message = "A entrada é obrigatória")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entrada_id", nullable = false)
+    @NotNull(message = "O ID da entrada é obrigatório")
+    @Schema(
+            description = "ID do diário de entrada associado ao registro",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
     private DiarioEntrada entrada;
 
     @NotBlank(message = "O tipo é obrigatório")
+    @Schema(
+            description = "Tipo do registro",
+            example = "Alimentação"
+    )
     private String tipo;
 
+    @Schema(
+            description = "Subtipo do registro",
+            example = "Ração seca"
+    )
     private String subtipo;
+
+    @Schema(
+            description = "Valor numérico relacionado ao registro",
+            example = "250.0"
+    )
     private Double valor;
+
+    @Schema(
+            description = "Unidade de medida do valor",
+            example = "gramas"
+    )
     private String unidade;
+
+    @Schema(
+            description = "Observações adicionais do registro",
+            example = "Pet comeu normalmente"
+    )
     private String nota;
+    @Schema(
+            description = "Data e hora do registro",
+            example = "2026-05-17T14:30:00"
+    )
     private LocalDateTime horario;
+
+    @Schema(
+            description = "Data e hora da última atualização do registro",
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
     private LocalDateTime atualizadoEm;
 
     public Registro() {
@@ -114,5 +160,16 @@ public class Registro {
 
     public void setAtualizadoEm(LocalDateTime atualizadoEm) {
         this.atualizadoEm = atualizadoEm;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.horario = LocalDateTime.now();
+        this.atualizadoEm = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.atualizadoEm = LocalDateTime.now();
     }
 }

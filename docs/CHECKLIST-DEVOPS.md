@@ -3,6 +3,7 @@
 ## Itens ja preparados
 
 - [x] Dockerfile da API Java.
+- [x] Projeto atualizado para a base `JavaFinal.zip`.
 - [x] Docker Compose com API e H2 em containers separados.
 - [x] Banco H2 containerizado com imagem `oscarfonts/h2`.
 - [x] Volume nomeado `h2-data` para persistencia.
@@ -23,7 +24,8 @@
 - [x] Teste local de CRUD.
 - [x] Teste local de persistencia.
 - [x] Script local de teste em `scripts/test-devops-local.ps1`.
-- [x] Imagem Docker otimizada para aproximadamente `234MB`, abaixo de `400MB`.
+- [x] Imagem Docker da API validada com aproximadamente `234MB`, abaixo de `400MB`.
+- [x] API JavaFinal validada com CRUD, paginacao e persistencia.
 
 ## Itens que dependem da etapa Azure/video
 
