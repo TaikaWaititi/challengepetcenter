@@ -1,0 +1,10 @@
+flowchart TD
+    A["Usuario / Postman / Insomnia"] --> B["Internet"]
+    B --> C["IP publico da Azure VM"]
+    C --> D["Network Security Group<br/>Portas 22, 8080, 81"]
+    D --> E["Azure VM Linux Ubuntu"]
+    E --> F["Docker Engine"]
+    F --> G["Container petcenter-api<br/>Spring Boot + Java 21<br/>Porta 8080<br/>Usuario spring"]
+    F --> H["Container petcenter-h2db<br/>Banco H2<br/>Console porta 81"]
+    H --> I["Volume nomeado h2-data<br/>Persistencia do banco"]
+    G --> H
