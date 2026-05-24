@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Challenge PetCenter - DevOps Tools & Cloud Computing
-# Execute este script no Azure Cloud Shell ou em uma maquina com Azure CLI logado.
-#
-# Antes de executar, altere GITHUB_REPO_URL para o repositorio publico do grupo.
-# O repositorio deve conter Dockerfile e docker-compose.yml na raiz do projeto Java.
-
 RESOURCE_GROUP="${RESOURCE_GROUP:-rg-petcenter}"
 LOCATION="${LOCATION:-brazilsouth}"
 VM_NAME="${VM_NAME:-vm-petcenter}"
