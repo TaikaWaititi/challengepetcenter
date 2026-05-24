@@ -14,7 +14,7 @@ API REST em Java com Spring Boot para acompanhamento diario da saude, humor e ro
 
 ## Objetivo do Projeto
 
-O projeto foi desenvolvido para o Challenge proposto pela Clyvo/FIAP. O objetivo e transformar registros cotidianos do pet em informacoes organizadas e consultaveis, permitindo identificar possiveis anomalias comportamentais e apoiar a busca por cuidado veterinario antes que um problema se agrave.
+O projeto foi desenvolvido para o Challenge proposto pela Clyvo/FIAP. O objetivo e transformar registros cotidianos do pet em informacoes organizadas e consultaveis, permitindo identificar possiveis anomalias comportamentais e apoiar a busca por cuidado veterinario antes que um problema se agrave por meio de um diário que tanto o tutor quanto o veterinário podem ter acesso.
 
 A proposta vai alem de um CRUD simples, permitindo:
 
