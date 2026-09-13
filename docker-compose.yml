@@ -1,29 +1,40 @@
 services:
-  h2db:
-    image: oscarfonts/h2:latest
-    container_name: petcenter-h2db
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    container_name: petcenter-oracle
     restart: unless-stopped
     ports:
-      - "81:81"
+      - "1521:1521"
     environment:
-      H2_OPTIONS: -ifNotExists
+      ORACLE_PASSWORD: oracle
+      APP_USER: PETCENTER
+      APP_USER_PASSWORD: petcenter
     volumes:
-      - h2-data:/opt/h2-data
+      - oracle-data:/opt/oracle/oradata
+      - ./database:/database:ro
+      - ./database/init:/container-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
 
   app:
     build: .
     container_name: petcenter-api
     restart: unless-stopped
     depends_on:
-      - h2db
+      oracle:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:h2:tcp://h2db:1521/./petcenterdb
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD: ""
-      SPRING_H2_CONSOLE_ENABLED: "true"
-      SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS: "true"
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle:1521/FREEPDB1
+      SPRING_DATASOURCE_USERNAME: PETCENTER
+      SPRING_DATASOURCE_PASSWORD: petcenter
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      JWT_SECRET: cGV0Y2VudGVyLWRldm9wcy1sb2NhbC1qd3Qtc2VjcmV0LTIwMjYtc3ByaW50NA==
 
 volumes:
-  h2-data:
+  oracle-data:

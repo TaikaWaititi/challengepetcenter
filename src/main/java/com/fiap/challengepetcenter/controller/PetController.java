@@ -1,7 +1,7 @@
 package com.fiap.challengepetcenter.controller;
 
-import com.fiap.challengepetcenter.DTO.PetRequestDTO;
-import com.fiap.challengepetcenter.DTO.PetResponseDTO;
+import com.fiap.challengepetcenter.dto.request.PetRequestDTO;
+import com.fiap.challengepetcenter.dto.response.PetResponseDTO;
 import com.fiap.challengepetcenter.service.PetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +66,7 @@ public class PetController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<PetResponseDTO> pets = petService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
+        Page<PetResponseDTO> pets = petService.listarTodos(pageable);
         return ResponseEntity.ok(pets);
     }
 
@@ -113,7 +113,7 @@ public class PetController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<PetResponseDTO> pets = petService.buscarPorUserId(userId, PageableUtils.comOrdenacaoPadrao(pageable));
+        Page<PetResponseDTO> pets = petService.buscarPorUserId(userId, pageable);
         return ResponseEntity.ok(pets);
     }
 
@@ -138,7 +138,7 @@ public class PetController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<PetResponseDTO> pets = petService.buscarPorNome(nome, PageableUtils.comOrdenacaoPadrao(pageable));
+        Page<PetResponseDTO> pets = petService.buscarPorNome(nome, pageable);
         return ResponseEntity.ok(pets);
     }
 

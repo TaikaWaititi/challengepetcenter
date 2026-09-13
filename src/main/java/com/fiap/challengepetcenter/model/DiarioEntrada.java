@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "diario_entrada")
+@Table(name = "diario_entradas")
 @Schema(
         name = "DiarioEntrada",
         description = "Representa uma entrada de diário associada a um pet no sistema API PetCenter"

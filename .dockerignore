@@ -3,4 +3,5 @@
 .vscode
 target
 data
+tmp
 *.log

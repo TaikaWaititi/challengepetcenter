@@ -1,0 +1,61 @@
+apiVersion: '2021-10-01'
+location: __LOCATION__
+name: __CONTAINER_GROUP_NAME__
+properties:
+  osType: Linux
+  restartPolicy: Always
+  imageRegistryCredentials:
+    - server: __ACR_LOGIN_SERVER__
+      username: __ACR_USERNAME__
+      password: __ACR_PASSWORD__
+  ipAddress:
+    type: Public
+    dnsNameLabel: __DNS_LABEL__
+    ports:
+      - protocol: TCP
+        port: 8080
+  containers:
+    - name: oracle
+      properties:
+        image: __ORACLE_IMAGE__
+        resources:
+          requests:
+            cpu: 1.0
+            memoryInGB: 2.5
+        ports:
+          - port: 1521
+            protocol: TCP
+        environmentVariables:
+          - name: ORACLE_PASSWORD
+            secureValue: __ORACLE_PASSWORD__
+          - name: APP_USER
+            value: PETCENTER
+          - name: APP_USER_PASSWORD
+            secureValue: __APP_USER_PASSWORD__
+    - name: app
+      properties:
+        image: __APP_IMAGE__
+        resources:
+          requests:
+            cpu: 1.0
+            memoryInGB: 1.0
+        ports:
+          - port: 8080
+            protocol: TCP
+        environmentVariables:
+          - name: WAIT_FOR_HOST
+            value: localhost
+          - name: WAIT_FOR_PORT
+            value: '1521'
+          - name: WAIT_FOR_TIMEOUT
+            value: '900'
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:oracle:thin:@localhost:1521/FREEPDB1
+          - name: SPRING_DATASOURCE_USERNAME
+            value: PETCENTER
+          - name: SPRING_DATASOURCE_PASSWORD
+            secureValue: __APP_USER_PASSWORD__
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: none
+          - name: JWT_SECRET
+            secureValue: __JWT_SECRET__

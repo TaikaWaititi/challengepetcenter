@@ -4,30 +4,33 @@ WORKDIR /app
 COPY pom.xml .
 COPY mvnw .
 COPY .mvn .mvn
-RUN mvn -B dependency:go-offline
+RUN chmod +x mvnw && ./mvnw -B dependency:go-offline
 
 COPY src src
-RUN mvn -B clean package -DskipTests
+RUN ./mvnw -B clean package -DskipTests
 
+FROM eclipse-temurin:21-jdk-alpine AS jre
 RUN jlink \
-    --add-modules java.base,java.compiler,java.logging,java.sql,java.naming,java.desktop,java.management,java.instrument,java.net.http,java.xml,java.security.jgss,jdk.crypto.ec,jdk.unsupported \
+    --add-modules java.base,java.compiler,java.desktop,java.instrument,java.logging,java.management,java.naming,java.net.http,java.security.jgss,java.security.sasl,java.sql,java.transaction.xa,java.xml,jdk.crypto.ec,jdk.unsupported \
     --strip-debug \
     --no-man-pages \
     --no-header-files \
     --compress=2 \
-    --output /custom-jre
+    --output /opt/petcenter-jre
 
 FROM alpine:3.20
 WORKDIR /app
 
-RUN addgroup -S spring && adduser -S spring -G spring -u 1001
-COPY --from=build /custom-jre /opt/java/openjdk
+RUN apk add --no-cache netcat-openbsd \
+    && addgroup -S spring \
+    && adduser -S spring -G spring -u 1001
+COPY --from=jre /opt/petcenter-jre /opt/petcenter-jre
 COPY --from=build /app/target/*.jar app.jar
+COPY scripts/docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
 
-ENV JAVA_HOME=/opt/java/openjdk
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
-
+ENV PATH="/opt/petcenter-jre/bin:${PATH}"
 USER spring
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

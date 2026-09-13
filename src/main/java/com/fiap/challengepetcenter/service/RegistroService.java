@@ -1,9 +1,8 @@
 package com.fiap.challengepetcenter.service;
 
-import com.fiap.challengepetcenter.DTO.RegistroRequestDTO;
-import com.fiap.challengepetcenter.DTO.RegistroResponseDTO;
-import com.fiap.challengepetcenter.exception.DiarioEntradaNaoEncontradoException;
-import com.fiap.challengepetcenter.exception.RegistroNaoEncontradoException;
+import com.fiap.challengepetcenter.dto.request.RegistroRequestDTO;
+import com.fiap.challengepetcenter.dto.response.RegistroResponseDTO;
+import com.fiap.challengepetcenter.exception.RecursoNaoEncontradoException;
 import com.fiap.challengepetcenter.model.DiarioEntrada;
 import com.fiap.challengepetcenter.model.Registro;
 import com.fiap.challengepetcenter.repository.DiarioEntradaRepository;
@@ -13,9 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RegistroService {
@@ -32,7 +28,7 @@ public class RegistroService {
     @Transactional
     public RegistroResponseDTO salvar(RegistroRequestDTO requestDTO) {
         DiarioEntrada diarioEntrada = diarioEntradaRepository.findById(requestDTO.entradaId())
-                .orElseThrow(() -> new DiarioEntradaNaoEncontradoException("DiarioEntrada não encontrado com ID: " + requestDTO.entradaId()));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("DiarioEntrada não encontrado com ID: " + requestDTO.entradaId()));
 
         Registro registro = new Registro();
         registro.setEntrada(diarioEntrada);
@@ -57,17 +53,17 @@ public class RegistroService {
     @Transactional(readOnly = true)
     public RegistroResponseDTO buscarPorId(Long id) {
         Registro registro = registroRepository.findById(id)
-                .orElseThrow(() -> new RegistroNaoEncontradoException("Registro não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Registro não encontrado com ID: " + id));
         return RegistroResponseDTO.fromEntity(registro);
     }
 
     @Transactional
     public RegistroResponseDTO atualizar(Long id, RegistroRequestDTO requestDTO) {
         Registro registroExistente = registroRepository.findById(id)
-                .orElseThrow(() -> new RegistroNaoEncontradoException("Registro não encontrado com ID: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Registro não encontrado com ID: " + id));
 
         DiarioEntrada diarioEntrada = diarioEntradaRepository.findById(requestDTO.entradaId())
-                .orElseThrow(() -> new DiarioEntradaNaoEncontradoException("DiarioEntrada não encontrado com ID: " + requestDTO.entradaId()));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("DiarioEntrada não encontrado com ID: " + requestDTO.entradaId()));
 
         registroExistente.setEntrada(diarioEntrada);
         registroExistente.setTipo(requestDTO.tipo());

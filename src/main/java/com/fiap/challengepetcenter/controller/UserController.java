@@ -1,7 +1,7 @@
 package com.fiap.challengepetcenter.controller;
 
-import com.fiap.challengepetcenter.DTO.UserRequestDTO;
-import com.fiap.challengepetcenter.DTO.UserResponseDTO;
+import com.fiap.challengepetcenter.dto.request.UserRequestDTO;
+import com.fiap.challengepetcenter.dto.response.UserResponseDTO;
 import com.fiap.challengepetcenter.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +66,7 @@ public class UserController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<UserResponseDTO> users = userService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
+        Page<UserResponseDTO> users = userService.listarTodos(pageable);
         return ResponseEntity.ok(users);
     }
 

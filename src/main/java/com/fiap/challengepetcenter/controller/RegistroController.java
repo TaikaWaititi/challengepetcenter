@@ -1,6 +1,7 @@
 package com.fiap.challengepetcenter.controller;
 
-import com.fiap.challengepetcenter.DTO.*;
+import com.fiap.challengepetcenter.dto.request.RegistroRequestDTO;
+import com.fiap.challengepetcenter.dto.response.RegistroResponseDTO;
 import com.fiap.challengepetcenter.service.RegistroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +67,7 @@ public class RegistroController {
                     direction = Sort.Direction.ASC
             ) Pageable pageable
     ) {
-        Page<RegistroResponseDTO> registros = registroService.listarTodos(PageableUtils.comOrdenacaoPadrao(pageable));
+        Page<RegistroResponseDTO> registros = registroService.listarTodos(pageable);
         return ResponseEntity.ok(registros);
     }
 

@@ -31,32 +31,34 @@ public class Pet {
     )
     private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     @Schema(
             description = "Nome do pet",
             example = "Luna"
     )
     private String nome;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @Schema(
             description = "Espécie do pet",
             example = "Cachorro"
     )
     private String especie;
 
-
+    @Column(length = 100)
     @Schema(
             description = "Raça do pet",
             example = "Golden Retriever"
     )
     private String raca;
+    
     @Schema(
             description = "Data de nascimento do pet",
             example = "2022-03-15"
     )
     private LocalDate dataNascimento;
 
+    @Column(length = 500)
     @Schema(
             description = "Observações adicionais sobre o pet",
             example = "Pet alérgico a determinados alimentos"

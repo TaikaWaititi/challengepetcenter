@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
@@ -39,8 +40,8 @@ public class User {
 
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email inválido")
-    @Size(min = 3, max = 120, message = "O email deve ter entre 3 e 120 caracteres")
-    @Column(unique = true, nullable = false, length = 120)
+    @Size(min = 3, max = 150, message = "O email deve ter entre 3 e 150 caracteres")
+    @Column(unique = true, nullable = false, length = 150)
     @Schema(
             description = "Email único do usuário",
             example = "joaosilva@email.com",
@@ -51,18 +52,14 @@ public class User {
     private String email;
 
     @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 6, max = 8, message = "Senha deve ter entre 6 e 8 caracteres")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     @Schema(
             description = "Senha do usuário",
             example = "123642",
-            required = true,
-            minLength = 6,
-            maxLength = 8
+            required = true
     )
     private String senha;
 
-    @NotBlank(message = "Telefone obrigatório")
     @Column(nullable = false, length = 20)
     @Schema(
             description = "Telefone do usuário",
@@ -72,15 +69,15 @@ public class User {
     )
     private String telefone;
 
-    @NotBlank(message = "Tipo de usuário é obrigatório")
+    @NotNull(message = "Tipo de usuário é obrigatório")
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_usuario", nullable = false, length = 20)
     @Schema(
             description = "Tipo do usuário",
-            example = "Tutor",
-            required = true,
-            maxLength = 20
+            example = "TUTOR",
+            required = true
     )
-    private String tipoUsuario;
+    private TipoUsuario tipoUsuario;
 
     @Schema(
             description = "Indica se o usuário está ativo",
@@ -107,7 +104,7 @@ public class User {
     public User() {
     }
 
-    public User(String nome, String email, String senha, String telefone, String tipoUsuario, Boolean ativo, LocalDateTime ultimoLogin) {
+    public User(String nome, String email, String senha, String telefone, TipoUsuario tipoUsuario, Boolean ativo, LocalDateTime ultimoLogin) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -157,11 +154,11 @@ public class User {
         this.telefone = telefone;
     }
 
-    public String getTipoUsuario() {
+    public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(String tipoUsuario) {
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 
