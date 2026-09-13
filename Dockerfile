@@ -27,7 +27,8 @@ RUN apk add --no-cache netcat-openbsd \
 COPY --from=jre /opt/petcenter-jre /opt/petcenter-jre
 COPY --from=build /app/target/*.jar app.jar
 COPY scripts/docker-entrypoint.sh /app/docker-entrypoint.sh
-RUN chmod +x /app/docker-entrypoint.sh
+RUN sed -i 's/\r$//' /app/docker-entrypoint.sh \
+    && chmod +x /app/docker-entrypoint.sh
 
 ENV PATH="/opt/petcenter-jre/bin:${PATH}"
 USER spring
