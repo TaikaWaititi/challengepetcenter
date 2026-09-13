@@ -37,40 +37,13 @@ O projeto foi desenvolvido para o Challenge proposto pela Clyvo. O objetivo é t
 
 ## Arquitetura
 
-```text
-Swagger / Postman / Insomnia / Navegador
-        |
-        v
-API Spring Boot - Java 21 + Spring Security + JWT
-        |
-        v
-Oracle Database Free - container petcenter-oracle
-        |
-        v
-Schema PETCENTER criado a partir do SQL do projeto de Banco de Dados
-```
+A solução foi organizada como uma arquitetura de containers na Azure, usando a opção ACR + ACI. O Azure Container Registry armazena as imagens Docker da aplicação e do banco de dados, enquanto o Azure Container Instances executa o ambiente em nuvem por meio de um Container Group.
 
-Na Azure, a arquitetura utilizada foi:
+No Container Group, o container `petcenter-api` executa a API Java com Spring Boot na porta `8080`, expondo os endpoints da aplicação e a documentação Swagger. Esse container foi configurado para executar com usuário não-root, atendendo ao requisito de não utilizar privilégios administrativos.
 
-```text
-Usuário
-  |
-  v
-URL pública do Azure Container Instances
-  |
-  v
-Container Group ACI
-  |
-  +--> petcenter-api
-  |       API Java/Spring Boot
-  |       Porta pública 8080
-  |       Execução sem usuário root/admin
-  |
-  +--> petcenter-oracle
-          Oracle Database Free
-          Porta interna 1521
-          Schema PETCENTER
-```
+O container `petcenter-oracle` executa o Oracle Database Free e mantém o schema `PETCENTER`, criado a partir do SQL do projeto de Banco de Dados. A aplicação Java se conecta ao banco Oracle pela rede interna do próprio grupo de containers, usando o service `FREEPDB1`.
+
+O acesso externo é feito pela URL pública do Azure Container Instances, que direciona as requisições para a API. O banco de dados não precisa ser exposto publicamente para uso da aplicação, pois a comunicação entre aplicação e banco ocorre dentro do ambiente em nuvem.
 
 ## Banco de Dados do Projeto
 
