@@ -6,7 +6,7 @@ Esta versão documenta o estado atual do projeto de DevOps: API Java containeriz
 
 ## Objetivo do Projeto
 
-O projeto foi desenvolvido para o Challenge proposto pela Clyvo/FIAP. O objetivo é transformar registros cotidianos do pet em informações organizadas e consultáveis, permitindo identificar possíveis anomalias comportamentais e apoiar a busca por cuidado veterinário antes que um problema se agrave.
+O projeto foi desenvolvido para o Challenge proposto pela Clyvo. O objetivo é transformar registros cotidianos do pet em informações organizadas e consultáveis, permitindo identificar possíveis anomalias comportamentais e apoiar a busca por cuidado veterinário antes que um problema se agrave.
 
 ## Benefícios para o Negócio
 
@@ -74,7 +74,7 @@ Container Group ACI
 
 ## Banco de Dados do Projeto
 
-O projeto de DevOps foi alinhado ao projeto de Banco de Dados. A versão atual utiliza Oracle Database Free em container, e não H2.
+O projeto de DevOps foi alinhado ao projeto de Banco de Dados. A versão atual foi alterada para não usar H2.
 
 O SQL do projeto de Banco de Dados foi usado para criar o schema `PETCENTER`, incluindo tabelas, relacionamentos, inserts e consultas de evidência. A inicialização do banco é feita automaticamente pelo container Oracle quando o ambiente é criado do zero.
 
@@ -230,7 +230,7 @@ O script valida:
 
 ## Azure ACR + ACI
 
-A etapa de Azure foi realizada via Azure CLI usando a opção ACR + ACI, conforme a abordagem trabalhada para a entrega de DevOps.
+A etapa de Azure foi realizada via Azure CLI usando a opção ACR + ACI, conforme a entrega de DevOps requisitou.
 
 Recursos criados:
 
