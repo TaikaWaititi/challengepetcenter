@@ -1,3 +1,6 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
 -- Tabelas Criadas:
 -- 1. USERS
 
@@ -275,6 +278,7 @@ BEGIN
     COMMIT;
 
 END;
+/
 
 
 -- user
@@ -317,6 +321,7 @@ EXCEPTION
         pr_log_erro('pr_insert_users', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- veterinarios
 
@@ -356,6 +361,7 @@ EXCEPTION
         pr_log_erro('pr_insert_veterinarios', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- pets
 CREATE OR REPLACE PROCEDURE pr_insert_pets (
@@ -400,6 +406,7 @@ EXCEPTION
         pr_log_erro('pr_insert_pets', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- pet e veterinario
 CREATE OR REPLACE PROCEDURE pr_insert_pet_veterinario (
@@ -441,6 +448,7 @@ EXCEPTION
         pr_log_erro('pr_insert_pet_veterinario', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- diario entradas
 CREATE OR REPLACE PROCEDURE pr_insert_diario_entradas (
@@ -482,6 +490,7 @@ EXCEPTION
         pr_log_erro('pr_insert_diario_entradas', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- registros
 
@@ -530,6 +539,7 @@ EXCEPTION
         pr_log_erro('pr_insert_registros', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- comentarios
 
@@ -566,6 +576,7 @@ EXCEPTION
         pr_log_erro('pr_insert_comentarios', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- insights
 
@@ -623,6 +634,7 @@ EXCEPTION
         pr_log_erro('pr_insert_insights', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- solicitacoes
 
@@ -668,6 +680,7 @@ EXCEPTION
         pr_log_erro('pr_insert_solicitacoes', SQLCODE, SQLERRM);
 
 END;
+/
 
 -- inserindo valores
 
@@ -707,6 +720,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- VETERINARIOS
@@ -727,6 +741,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- PETS
@@ -760,6 +775,7 @@ BEGIN
     );
 
 END;
+/
 
 -- PET_VETERINARIO
 BEGIN
@@ -789,6 +805,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- DIARIO_ENTRADAS
@@ -819,6 +836,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- REGISTROS
@@ -866,6 +884,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- COMENTARIOS
@@ -891,6 +910,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- INSIGHTS
@@ -936,6 +956,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- SOLICITACOES
@@ -969,6 +990,7 @@ BEGIN
     );
 
 END;
+/
 
 
 
@@ -1021,6 +1043,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 
 -- Quantidade de insights por veterinário e nível de alerta
@@ -1075,6 +1098,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 /*Criar um bloco que deverá ler os dados de uma tabela e, na mesma linha, mostrar o valor de uma coluna da linha atual, o valor
 dessa mesma coluna na linha anterior e o valor dessa mesma coluna na próxima linha. Caso a linha anterior ou a próxima linha não
@@ -1148,6 +1172,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 /*Relatórios: crie quatro blocos anônimos que usem cursor explícito e tomada de decisão. Um dos blocos anônimos deve listar todos
 os dados de uma tabela, mostrar os dados numéricos sumarizados e mostrar a sumarização dos dados agrupados por um critério
@@ -1223,6 +1248,7 @@ BEGIN
     );
 
 END;
+/
 
 
 -- RELATÓRIO 2
@@ -1279,6 +1305,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 -- RELATÓRIO 3
 -- LISTAR SOLICITAÇÕES E EXIBIR SITUAÇÃO
@@ -1335,6 +1362,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 
 -- RELATÓRIO 4
@@ -1396,6 +1424,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 
 
@@ -1508,6 +1537,7 @@ EXCEPTION
             '"}';
 
 END;
+/
 
 -- Teste função 1
 
@@ -1522,6 +1552,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE(fn_pet_json(99999));
 
 END;
+/
 
 /* 
    FUNÇÃO 2
@@ -1594,6 +1625,7 @@ EXCEPTION
         RETURN NULL;
 
 END;
+/
 
 -- Teste função 2
 
@@ -1613,6 +1645,7 @@ BEGIN
     );
 
 END;
+/
 
 
 
@@ -1710,6 +1743,7 @@ EXCEPTION
         );
 
 END;
+/
 
 
 
@@ -1722,6 +1756,7 @@ BEGIN
     pr_relatorio_pets_json;
 
 END;
+/
 
 
 
@@ -1757,6 +1792,7 @@ BEGIN
     );
 
 END;
+/
 
 
 
@@ -1939,6 +1975,7 @@ EXCEPTION
         );
 
 END;
+/
 
 -- Teste procedure 2
 
@@ -1949,6 +1986,7 @@ BEGIN
     pr_relatorio_registros_agrupado;
 
 END;
+/
 
 
 
@@ -2101,6 +2139,7 @@ BEGIN
     END IF;
 
 END;
+/
 
 
 
@@ -2154,6 +2193,7 @@ BEGIN
     );
 
 END;
+/
 
 
 
@@ -2196,6 +2236,7 @@ BEGIN
     END LOOP;
 
 END;
+/
 
 
 /*
@@ -2243,5 +2284,3 @@ SELECT
     new_valor
 FROM auditoria_registros
 ORDER BY id_auditoria;
-
-

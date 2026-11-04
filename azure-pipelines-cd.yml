@@ -1,0 +1,50 @@
+# PDF p.50, item 6.III: CD automatico apos CI bem-sucedido com novo artefato.
+name: cd-$(Date:yyyyMMdd).$(Rev:r)
+trigger: none
+pr: none
+resources:
+  pipelines:
+    - pipeline: ci
+      source: PetCenter-CI
+      trigger:
+        branches:
+          include: [refs/heads/master]
+variables:
+  - group: petcenter-sprint4
+pool:
+  vmImage: ubuntu-24.04
+stages:
+  - stage: Deploy
+    # Impede deploy de PR/main mesmo ao selecionar uma execucao manualmente.
+    condition: and(succeeded(), eq(variables['resources.pipeline.ci.sourceBranch'], 'refs/heads/master'))
+    jobs:
+      - deployment: DeployACI
+        environment: petcenter-sprint4
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: none
+                - download: none
+                - download: ci
+                  artifact: petcenter
+                - task: AzureCLI@2
+                  displayName: Publicar imagem do artefato e atualizar somente a API no ACI
+                  inputs:
+                    azureSubscription: sc-petcenter-azure
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      bash "$ARTIFACT_DIR/scripts/deploy-aci.sh"
+                  env:
+                    ARTIFACT_DIR: $(Pipeline.Workspace)/ci/petcenter
+                    RESOURCE_GROUP: $(RESOURCE_GROUP)
+                    AZURE_LOCATION: $(AZURE_LOCATION)
+                    ACR_NAME: $(ACR_NAME)
+                    ACI_NAME: $(ACI_NAME)
+                    DNS_LABEL: $(DNS_LABEL)
+                    ACI_IDENTITY_ID: $(ACI_IDENTITY_ID)
+                    SPRING_DATASOURCE_URL: $(SPRING_DATASOURCE_URL)
+                    SPRING_DATASOURCE_USERNAME: $(SPRING_DATASOURCE_USERNAME)
+                    SPRING_DATASOURCE_PASSWORD: $(SPRING_DATASOURCE_PASSWORD)
+                    JWT_SECRET: $(JWT_SECRET)

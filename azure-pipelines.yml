@@ -1,0 +1,45 @@
+# PDF p.50, item 6: CI automatico em master, testes e artefato publicado.
+name: ci-$(Date:yyyyMMdd).$(Rev:r)
+trigger:
+  batch: false
+  branches:
+    include: [master]
+pr:
+  branches:
+    include: [master, main]
+pool:
+  vmImage: ubuntu-24.04
+steps:
+  - checkout: self
+    persistCredentials: false
+  - bash: |
+      set -euo pipefail
+      echo "##vso[task.setvariable variable=JAVA_HOME]$JAVA_HOME_21_X64"
+      echo "##vso[task.prependpath]$JAVA_HOME_21_X64/bin"
+    displayName: Selecionar Java 21
+  - bash: bash scripts/ci/test-oracle.sh
+    displayName: Build e testes unitarios e de integracao com Oracle isolado
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: 'target/*-reports/TEST-*.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+      testRunTitle: Java 21 - regras de negocio e CRUD Oracle
+  - bash: |
+      set -euo pipefail
+      destination="$BUILD_ARTIFACTSTAGINGDIRECTORY/petcenter"
+      mkdir -p "$destination/scripts"
+      cp target/challengepetcenter-*.jar "$destination/app.jar"
+      cp azure/Dockerfile.runtime "$destination/Dockerfile"
+      cp scripts/ci/deploy-aci.sh scripts/ci/smoke.sh "$destination/scripts/"
+      printf '%s\n' "$BUILD_BUILDID" > "$destination/build-id.txt"
+      printf '%s\n' "$BUILD_SOURCEVERSION" > "$destination/commit.txt"
+      (cd "$destination" && sha256sum app.jar > SHA256SUMS)
+    displayName: Empacotar JAR testado e scripts para o CD
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/petcenter'
+      artifact: petcenter
+    displayName: Publicar artefato petcenter no Azure DevOps

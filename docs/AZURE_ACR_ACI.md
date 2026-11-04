@@ -1,3 +1,5 @@
+> Documento historico da configuracao anterior. Nao e o roteiro de implantacao da Sprint 4 nem uma comprovacao atual dos recursos citados. O grupo conjunto app/Oracle nao deve ser usado como alvo do novo CD. Siga [SPRINT4.md](SPRINT4.md).
+
 # Azure CLI - ACR + ACI
 
 Esta etapa publica a solucao containerizada do PetCenter no Microsoft Azure usando Azure CLI, Azure Container Registry (ACR) e Azure Container Instances (ACI).

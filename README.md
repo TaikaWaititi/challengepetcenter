@@ -1,328 +1,81 @@
-# Challenge PetCenter - Java Advanced + DevOps
+# Challenge PetCenter - Sprint 4 DevOps
 
-API REST em Java com Spring Boot para acompanhamento diário da saúde, humor e rotina de pets. A solução apoia tutores e clínicas veterinárias no registro de eventos relevantes, acompanhamento do histórico do animal e integração com a base relacional do projeto.
+API REST para acompanhar saude, humor e rotina dos pets. Centraliza o historico para tutores e clinicas e apoia a continuidade do cuidado veterinario.
 
-Esta versão documenta o estado atual do projeto de DevOps: API Java containerizada, banco Oracle em container, execução local com Docker Compose e publicação em Microsoft Azure usando Azure CLI, Azure Container Registry (ACR) e Azure Container Instances (ACI).
+Stack: Java 21, Spring Boot 4.0.6, Maven Wrapper, Spring MVC, JPA/Hibernate, Bean Validation, Spring Security, JWT, Oracle JDBC, Oracle Database Free e Swagger/OpenAPI. Entrega DevOps: Azure Pipelines, Docker, Azure Container Registry (ACR), Azure Container Instances (ACI), Azure CLI e identidade gerenciada para pull no ACR.
 
-## Objetivo do Projeto
+## Estado desta versao
 
-O projeto foi desenvolvido para o Challenge proposto pela Clyvo. O objetivo é transformar registros cotidianos do pet em informações organizadas e consultáveis, permitindo identificar possíveis anomalias comportamentais e apoiar a busca por cuidado veterinário antes que um problema se agrave.
+Versao candidata a entrega, com publicacao no GitHub autorizada pelo grupo. Oito testes unitarios e um teste de integracao com Oracle aprovados localmente. Em 04/11/2026 foi realizada uma publicacao manual de teste em ACI: API, login JWT e CRUD de pets e diarios aprovados com SELECTs no Oracle da Azure. A execucao real das pipelines e o deploy automatico da Sprint 4 continuam pendentes. Consulte [o passo a passo e as evidencias do teste em nuvem](docs/TESTE_NUVEM.md).
 
-## Benefícios para o Negócio
+- [Configuracao e roteiro completo da Sprint 4](docs/SPRINT4.md)
+- [Alteracoes, razoes e requisitos correspondentes do PDF](docs/ALTERACOES_SPRINT4.md)
+- [Arquitetura proposta e fluxo CI/CD numerado](docs/arquitetura-sprint4.svg)
 
-- Centraliza dados importantes da jornada de saúde do pet.
-- Ajuda tutores e clínicas a acompanharem histórico, rotina e evolução do animal.
-- Facilita a continuidade do cuidado e reduz perda de informações entre consultas.
-- Cria base de dados para futuras recomendações, alertas e análises clínicas.
-- Aumenta potencial de recorrência e fidelização para clínicas veterinárias.
+## Ambiente atual na Azure
 
-## Stack
+Versao candidata a entrega publicada no grupo `rg-petcenter-rm564939-sprint4`, ACI `aci-petcenter-rm564939-sprint4`. API: http://petcenter-rm564939-sprint4.brazilsouth.azurecontainer.io:8080/ . Swagger: http://petcenter-rm564939-sprint4.brazilsouth.azurecontainer.io:8080/swagger-ui.html .
 
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- Spring Security
-- JWT
-- Bean Validation
-- Maven
-- Oracle Database Free em container
-- Oracle JDBC Driver
-- Swagger/OpenAPI
-- Docker
-- Docker Compose
-- Azure CLI
-- Azure Container Registry
-- Azure Container Instances
-- Runtime Java customizado com `jlink` para reduzir a imagem final da API
+O banco foi preservado por exportacao/restauracao Data Pump e o CRUD foi aprovado novamente no novo endereco. A origem com nome de teste foi desativada. Consulte [a migracao e o backup](docs/MIGRACAO_NOMES.md). CI/CD remoto e persistencia duravel do Oracle continuam pendentes; o novo nome nao altera essas limitacoes.
 
-## Arquitetura
+## Arquitetura da Sprint 4
 
-A solução foi organizada como uma arquitetura de containers na Azure, usando a opção ACR + ACI. O Azure Container Registry armazena as imagens Docker da aplicação e do banco de dados, enquanto o Azure Container Instances executa o ambiente em nuvem por meio de um Container Group.
+![Arquitetura proposta e fluxo CI/CD](docs/arquitetura-sprint4.svg)
 
-No Container Group, o container `petcenter-api` executa a API Java com Spring Boot na porta `8080`, expondo os endpoints da aplicação e a documentação Swagger. Esse container foi configurado para executar com usuário não-root, atendendo ao requisito de não utilizar privilégios administrativos.
+O desenvolvedor envia codigo ao GitHub na branch `master`. O Azure DevOps compila e executa testes unitarios e de integracao contra Oracle descartavel, publica o JAR como Pipeline Artifact e dispara o CD. O CD baixa esse artefato, verifica o checksum, cria uma imagem com tag do build, publica no ACR e atualiza um ACI exclusivo da API. O usuario acessa API/Swagger; a API usa um Oracle em nuvem separado do ciclo de deploy da aplicacao.
 
-O container `petcenter-oracle` executa o Oracle Database Free e mantém o schema `PETCENTER`, criado a partir do SQL do projeto de Banco de Dados. A aplicação Java se conecta ao banco Oracle pela rede interna do próprio grupo de containers, usando o service `FREEPDB1`.
+**Banco do CD definitivo: infraestrutura separada ainda pendente.** Oracle da FIAP ou Oracle em infraestrutura persistente sao opcoes previstas no PDF. O endereco JDBC precisa ser acessivel pelo ACI, com schema preparado. O Oracle descartavel do CI e o Compose local nao substituem esse banco. O grupo legado com app e Oracle juntos nao sera atualizado pelo novo script.
 
-O acesso externo é feito pela URL pública do Azure Container Instances, que direciona as requisições para a API. O banco de dados não precisa ser exposto publicamente para uso da aplicação, pois a comunicação entre aplicação e banco ocorre dentro do ambiente em nuvem.
+## Execucao local
 
-## Banco de Dados do Projeto
+Requisitos: Java 21 e Docker com Linux containers. Em PowerShell:
 
-O projeto de DevOps foi alinhado ao projeto de Banco de Dados. A versão atual foi alterada para não usar H2.
-
-O SQL do projeto de Banco de Dados foi usado para criar o schema `PETCENTER`, incluindo tabelas, relacionamentos, inserts e consultas de evidência. A inicialização do banco é feita automaticamente pelo container Oracle quando o ambiente é criado do zero.
-
-Credenciais locais padrão:
-
-```text
-Host: localhost
-Porta: 1521
-Service: FREEPDB1
-Usuário: PETCENTER
-Senha: petcenter
-JDBC: jdbc:oracle:thin:@localhost:1521/FREEPDB1
-```
-
-## Docker
-
-O projeto possui uma API Java containerizada e um banco Oracle também containerizado.
-
-A imagem da API foi otimizada com build multi-stage:
-
-- Maven usado apenas na etapa de build.
-- Runtime Java 21 reduzido com `jlink`.
-- Imagem final baseada em Alpine.
-- Aplicação executada por usuário não-root.
-
-Durante a adequação de DevOps, a imagem da API foi reduzida de aproximadamente 424 MB para cerca de 251 MB.
-
-## Como Executar Localmente
-
-Suba a API e o banco:
-
-```bash
+```powershell
+.\scripts\new-local-env.ps1
 docker compose up -d --build
 ```
 
-Verifique os containers:
+O gerador cria `.env` ignorado pelo Git, com senhas aleatorias. Ele nao sobrescreve um arquivo existente. Credenciais de um volume Oracle ja existente nao sao trocadas ao mudar `.env`; preserve as credenciais ou use um ambiente de testes separado. Nao remova volumes com dados que deseja manter.
 
-```bash
-docker compose ps
-```
+API: `http://localhost:8080/`; Swagger: `http://localhost:8080/swagger-ui.html`.
 
-API:
+## Testes
 
-```text
-http://localhost:8080
-```
-
-Swagger:
-
-```text
-http://localhost:8080/swagger-ui.html
-```
-
-Logs da API:
-
-```bash
-docker compose logs -f app
-```
-
-Logs do Oracle:
-
-```bash
-docker compose logs -f oracle
-```
-
-## Autenticação
-
-O cadastro de usuário é público:
-
-```http
-POST /api/users
-```
-
-O login gera o token JWT:
-
-```http
-POST /api/auth/login
-```
-
-Os demais endpoints protegidos devem receber:
-
-```text
-Authorization: Bearer <token>
-```
-
-## Rotas Principais
-
-### Auth
-
-- `POST /api/auth/login`
-
-### Users
-
-- `POST /api/users`
-- `GET /api/users`
-- `GET /api/users/{id}`
-- `GET /api/users/email/{email}`
-- `PUT /api/users/{id}`
-- `DELETE /api/users/{id}`
-
-### Pets
-
-- `POST /api/pets`
-- `GET /api/pets`
-- `GET /api/pets/{id}`
-- `GET /api/pets/user/{userId}`
-- `GET /api/pets/nome/{nome}`
-- `PUT /api/pets/{id}`
-- `DELETE /api/pets/{id}`
-
-### Diário de Entradas
-
-- `POST /api/diarioentradas`
-- `GET /api/diarioentradas`
-- `GET /api/diarioentradas/{id}`
-- `GET /api/diarioentradas/data?data=2026-05-11`
-- `PUT /api/diarioentradas/{id}`
-- `DELETE /api/diarioentradas/{id}`
-
-### Registros
-
-- `POST /api/registros`
-- `GET /api/registros`
-- `GET /api/registros/{id}`
-- `PUT /api/registros/{id}`
-- `DELETE /api/registros/{id}`
-
-### Veterinários, Solicitações, Vínculos e Alertas
-
-A versão atual também foi adequada para ficar alinhada ao projeto Java mais recente, incluindo recursos relacionados a veterinários, solicitações, vínculos entre pets e veterinários e alertas. A forma mais segura de conferir parâmetros e payloads atualizados é pelo Swagger.
-
-## Teste Automatizado Local
-
-Com os containers em execução, rode:
+Testes unitarios sem banco:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\test-devops-local.ps1
+.\mvnw.cmd -B -ntp clean verify
 ```
 
-O script valida:
-
-- Swagger local.
-- API em execução.
-- Criação de usuário.
-- Login com JWT.
-- Uso do token em rotas protegidas.
-- Cadastro e consulta de pet.
-- Entradas de diário.
-- Registros.
-- Persistência no Oracle.
-- Usuário não-root no container da API.
-- Tamanho da imagem Docker.
-
-## Azure ACR + ACI
-
-A etapa de Azure foi realizada via Azure CLI usando a opção ACR + ACI, conforme a entrega de DevOps requisitou.
-
-Recursos criados:
-
-- Resource Group: `rg-petcenter-rm564939-devops`
-- Azure Container Registry: `acrpetcenterrm564939`
-- Azure Container Instance: `aci-petcenter-rm564939`
-- URL pública: `http://petcenter-rm564939-devops.brazilsouth.azurecontainer.io:8080`
-- Swagger público: `http://petcenter-rm564939-devops.brazilsouth.azurecontainer.io:8080/swagger-ui.html`
-
-Imagens publicadas no ACR:
-
-- `acrpetcenterrm564939.azurecr.io/petcenter-api:latest`
-- `acrpetcenterrm564939.azurecr.io/petcenter-oracle:latest`
-
-## Comandos Base da Etapa Azure
-
-Os comandos abaixo representam o fluxo usado na entrega:
+Mesmo fluxo usado pelo CI, em Bash (Linux ou Git Bash), com Java 21 e Docker disponiveis:
 
 ```bash
-az account show
-az provider register --namespace Microsoft.ContainerRegistry --wait
-az provider register --namespace Microsoft.ContainerInstance --wait
-
-az group create \
-  --name rg-petcenter-rm564939-devops \
-  --location brazilsouth
-
-az acr create \
-  --resource-group rg-petcenter-rm564939-devops \
-  --name acrpetcenterrm564939 \
-  --sku Basic \
-  --admin-enabled true
-
-az acr login --name acrpetcenterrm564939
-
-docker build -t acrpetcenterrm564939.azurecr.io/petcenter-api:latest .
-docker build -t acrpetcenterrm564939.azurecr.io/petcenter-oracle:latest ./database
-
-docker push acrpetcenterrm564939.azurecr.io/petcenter-api:latest
-docker push acrpetcenterrm564939.azurecr.io/petcenter-oracle:latest
-
-az container create \
-  --resource-group rg-petcenter-rm564939-devops \
-  --file ./tmp/azure/container-group.yml
+bash scripts/ci/test-oracle.sh
 ```
 
-O arquivo YAML usado no `az container create` foi renderizado localmente com os valores sensíveis e não deve ser versionado. A versão correta para documentação deve conter apenas placeholders.
+Cria um Oracle isolado, com credenciais aleatorias e porta livre, executa `clean verify -Poracle-it` e remove somente o container criado para essa execucao. O teste de integracao faz cadastro, login JWT, CRUD de pet e SELECTs no Oracle apos inserir, atualizar e excluir. Relatorios ficam em `target/surefire-reports` e `target/failsafe-reports`; o CI os publica na aba Tests.
 
-## Validação em Nuvem
+## Autenticacao e rotas
 
-A publicação em ACI foi validada com:
+- Cadastro publico: `POST /api/users`.
+- Login: `POST /api/auth/login`.
+- Rotas protegidas: `Authorization: Bearer <token>`.
+- CRUD: `/api/pets`, `/api/diarioentradas`, `/api/registros`.
+- Outros modulos: veterinarios, solicitacoes, vinculos e alertas; payloads atualizados no Swagger.
 
-- Container `app` em execução.
-- Container `oracle` em execução.
-- Swagger público retornando HTTP `200`.
-- Rota `/` retornando HTTP `200`.
-- Cadastro de usuário pela URL pública.
-- Login JWT pela URL pública.
-- Criação de pet pela URL pública.
+A rota `/` em `HomeController.java` pode receber uma alteracao visual de codigo para demonstrar o deploy no video. Alterar apenas o README nao atende essa evidencia.
 
-Teste remoto usado:
+## Demonstracao CRUD
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\test-azure-public.ps1
+.\scripts\demo-crud-sprint4.ps1 -BaseUrl 'http://<DNS-DO-ACI>:8080'
 ```
 
-Resultado esperado:
+O script pausa apos cada operacao para executar e filmar o SELECT no cliente SQL conectado ao banco em nuvem. Nao imprime senha ou token. Interface REST funcionando, isoladamente, nao comprova os SELECTs exigidos.
 
-```json
-{
-  "status": "OK",
-  "swaggerHttp": 200,
-  "homeHttp": 200,
-  "home": "Challenge PetCenter API funcionando!"
-}
-```
+## Entrega
 
-## Evidência Manual no Banco
-
-Para acessar o SQLPlus do Oracle local:
-
-```bash
-docker compose exec oracle sqlplus PETCENTER/petcenter@FREEPDB1
-```
-
-Para executar consultas de evidência:
-
-```bash
-docker compose exec -T oracle sqlplus -s PETCENTER/petcenter@FREEPDB1 "@/database/select-evidencias.sql"
-```
-
-## Reset do Banco Local
-
-Para recriar tudo do zero:
-
-```bash
-docker compose down -v
-docker compose up -d --build
-```
-
-O volume do Oracle guarda a persistência local. Ao usar `down -v`, os dados são apagados e o script de inicialização roda novamente.
-
-## Observação Sobre VM
-
-A entrega final documentada aqui usa ACR + ACI. Scripts antigos baseados em VM Linux podem existir no histórico do projeto, mas não representam a abordagem final adotada nesta versão.
-
-## Custos
-
-A configuração ACR + ACI gera custo enquanto os recursos estiverem ativos. Para interromper/remover os recursos da entrega:
-
-```bash
-az group delete --name rg-petcenter-rm564939-devops --yes --no-wait
-```
-
-## Repositório
-
-```text
-https://github.com/TaikaWaititi/challengepetcenter
-```
+O PDF final deve conter somente nome completo, RM e turma de cada integrante, link GitHub, link YouTube e link do projeto Azure DevOps. Descricao, stack, diagrama e instrucoes ficam neste README e nos documentos vinculados. Consulte o roteiro completo antes de gravar.
 
 ## Equipe
 
@@ -330,4 +83,6 @@ https://github.com/TaikaWaititi/challengepetcenter
 - Julia Tiziotto Buttler - RM564975
 - Mariana Xavier Quispe - RM566357
 - Bruno Martins Bettio - RM564939
-- José Diogo Da Silva Neves - RM562341
+- Jose Diogo Da Silva Neves - RM562341
+
+Turmas e nome do professor ainda precisam ser informados para a configuracao final.

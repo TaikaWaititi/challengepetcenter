@@ -5,3 +5,7 @@ target
 data
 tmp
 *.log
+.env
+.env.*
+artifacts
+outputs

@@ -6,9 +6,9 @@ services:
     ports:
       - "1521:1521"
     environment:
-      ORACLE_PASSWORD: oracle
-      APP_USER: PETCENTER
-      APP_USER_PASSWORD: petcenter
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:?Gere o .env com scripts/new-local-env.ps1}
+      APP_USER: ${APP_USER:-PETCENTER}
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD:?Informe a senha do schema no .env}
     volumes:
       - oracle-data:/opt/oracle/oradata
       - ./database:/database:ro
@@ -31,10 +31,10 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle:1521/FREEPDB1
-      SPRING_DATASOURCE_USERNAME: PETCENTER
-      SPRING_DATASOURCE_PASSWORD: petcenter
+      SPRING_DATASOURCE_USERNAME: ${APP_USER:-PETCENTER}
+      SPRING_DATASOURCE_PASSWORD: ${APP_USER_PASSWORD:?Informe a senha do schema no .env}
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
-      JWT_SECRET: cGV0Y2VudGVyLWRldm9wcy1sb2NhbC1qd3Qtc2VjcmV0LTIwMjYtc3ByaW50NA==
+      JWT_SECRET: ${JWT_SECRET:?Informe uma chave Base64 aleatoria no .env}
 
 volumes:
   oracle-data:

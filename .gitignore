@@ -37,3 +37,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Segredos e arquivos renderizados de infraestrutura
+.env
+.env.*
+!.env.example
+*.secrets.json
+azure/*.parameters.json
+artifacts/
