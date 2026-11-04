@@ -12,6 +12,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "Challenge PetCenter API funcionando! Sprint 4 DevOps - build " + buildId;
+        return "PetCenter API - Sprint 4 DevOps publicada na Azure - build " + buildId;
     }
 }

@@ -1,0 +1,12 @@
+#cloud-config
+package_update: true
+packages: [docker.io, curl]
+runcmd:
+  - systemctl enable --now docker
+  - mkdir -p /srv/petcenter
+  - bash -c 'while [ ! -b /dev/disk/azure/scsi1/lun0 ]; do sleep 2; done; blkid /dev/disk/azure/scsi1/lun0 || mkfs.ext4 /dev/disk/azure/scsi1/lun0'
+  - bash -c 'echo "UUID=$(blkid -s UUID -o value /dev/disk/azure/scsi1/lun0) /srv/petcenter ext4 defaults,nofail 0 2" >> /etc/fstab'
+  - mount /srv/petcenter
+  - mkdir -p /srv/petcenter/oradata
+  - chown 54321:54321 /srv/petcenter/oradata
+  - docker pull gvenzl/oracle-free@sha256:6d61d267a3b978c24c5ac1790e62e927416a0aec446bd86e4b3a1527562757bd

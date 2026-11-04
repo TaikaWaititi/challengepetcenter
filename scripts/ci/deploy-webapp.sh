@@ -16,7 +16,7 @@ az webapp config appsettings set -g "$RESOURCE_GROUP" -n "$WEBAPP_NAME" \
   --settings "SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL" \
     "SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME" \
     "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" "JWT_SECRET=$JWT_SECRET" \
-    "APP_BUILD_ID=$build_id" SPRING_JPA_HIBERNATE_DDL_AUTO=none SERVER_PORT=8080 \
+    "APP_BUILD_ID=$build_id" SPRING_JPA_HIBERNATE_DDL_AUTO=none SERVER_PORT=8080 SERVER_FORWARD_HEADERS_STRATEGY=framework \
   --only-show-errors --output none
 az webapp deploy -g "$RESOURCE_GROUP" -n "$WEBAPP_NAME" --src-path app.jar \
   --type jar --async true --only-show-errors --output none
