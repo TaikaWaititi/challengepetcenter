@@ -17,7 +17,13 @@ cleanup() {
 }
 trap cleanup EXIT
 docker build -t petcenter-oracle-ci ./database
-container_id="$(docker run -d -p 127.0.0.1::1521 \
+network_arguments=(-p 127.0.0.1::1521)
+oracle_host=localhost
+if [[ -n "${CI_DOCKER_NETWORK:-}" ]]; then
+  oracle_host="petcenter-ci-${BUILD_BUILDID:-local}-$(openssl rand -hex 4)"
+  network_arguments=(--network "$CI_DOCKER_NETWORK" --name "$oracle_host")
+fi
+container_id="$(docker run -d "${network_arguments[@]}" \
   --env ORACLE_PASSWORD --env APP_USER --env APP_USER_PASSWORD \
   --health-cmd healthcheck.sh --health-interval 5s --health-timeout 10s \
   --health-retries 120 --health-start-period 60s petcenter-oracle-ci)"
@@ -32,8 +38,11 @@ if [[ "$ready" != true ]]; then
   echo 'Oracle de testes nao ficou saudavel; interrompendo o CI.' >&2
   exit 1
 fi
-port="$(docker port "$container_id" 1521/tcp | sed 's/.*://')"
-export SPRING_DATASOURCE_URL="jdbc:oracle:thin:@localhost:${port}/FREEPDB1"
+port=1521
+if [[ -z "${CI_DOCKER_NETWORK:-}" ]]; then
+  port="$(docker port "$container_id" 1521/tcp | sed 's/.*://')"
+fi
+export SPRING_DATASOURCE_URL="jdbc:oracle:thin:@${oracle_host}:${port}/FREEPDB1"
 export SPRING_DATASOURCE_USERNAME="$APP_USER"
 export SPRING_DATASOURCE_PASSWORD="$APP_USER_PASSWORD"
 export SPRING_JPA_HIBERNATE_DDL_AUTO=none

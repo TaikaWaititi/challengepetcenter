@@ -4,11 +4,9 @@ trigger:
   batch: false
   branches:
     include: [master]
-pr:
-  branches:
-    include: [master, main]
+pr: none
 pool:
-  vmImage: ubuntu-24.04
+  name: PetCenter-Linux
 steps:
   - checkout: self
     persistCredentials: false
@@ -19,6 +17,8 @@ steps:
     displayName: Selecionar Java 21
   - bash: bash scripts/ci/test-oracle.sh
     displayName: Build e testes unitarios e de integracao com Oracle isolado
+    env:
+      CI_DOCKER_NETWORK: petcenter-ci
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
@@ -33,7 +33,7 @@ steps:
       mkdir -p "$destination/scripts"
       cp target/challengepetcenter-*.jar "$destination/app.jar"
       cp azure/Dockerfile.runtime "$destination/Dockerfile"
-      cp scripts/ci/deploy-aci.sh scripts/ci/smoke.sh "$destination/scripts/"
+      cp scripts/ci/deploy-webapp.sh scripts/ci/smoke.sh "$destination/scripts/"
       printf '%s\n' "$BUILD_BUILDID" > "$destination/build-id.txt"
       printf '%s\n' "$BUILD_SOURCEVERSION" > "$destination/commit.txt"
       (cd "$destination" && sha256sum app.jar > SHA256SUMS)
