@@ -1,3 +1,5 @@
+> Registro historico. O estado atual, acessos e pipelines estao em [Entrega 4 DevOps](ENTREGA4_DEVOPS.md). As pendencias abaixo retratam a data de cada etapa.
+
 # Migracao para os nomes definitivos - 04/11/2026
 
 A solicitacao foi retirar o nome de teste dos recursos usados pela versao candidata a entrega. O codigo Java permaneceu o mesmo; nao houve commit ou push.

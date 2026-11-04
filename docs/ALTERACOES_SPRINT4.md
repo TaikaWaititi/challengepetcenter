@@ -1,4 +1,28 @@
-# Alteracoes propostas e justificativas - DevOps Sprint 4
+> Registro historico. O estado atual, acessos e pipelines estao em [Entrega 4 DevOps](ENTREGA4_DEVOPS.md). As pendencias abaixo retratam a data de cada etapa.
+
+# Alteracoes e justificativas - DevOps Sprint 4
+
+## Configuracao atual na organizacao Sprint4fiap
+
+Esta secao substitui as pendencias das etapas historicas abaixo. Consulte [o guia ativo](ENTREGA4_DEVOPS.md) para acessos, evidencias e roteiro.
+
+| Alteracao | Razao e requisito da Entrega 4 | Evidencia / limite |
+|---|---|---|
+| Projeto privado Sprint 4 – Azure DevOps, Git, Scrum, descricao com professor e equipe | Nome, descricao e configuracao exigidos na p.49, item 4 | Projeto em Sprint4fiap; projeto anterior preservado |
+| Professor Basic e Project Administrators | Acesso do professor, p.50, item 5 | pf2128@fiap.com.br cadastrado e autorizado |
+| `master`, PetCenter-CI, Java 21/Maven, testes JUnit/Mockito e Oracle isolado | Build e testes automaticos a cada mudanca, p.50, item 6.a e regras I/II/VI | Nove testes aprovados; resultados publicados na aba Tests |
+| Pipeline Artifact `petcenter`, manifestos e SHA-256 | Artefato publicado no Azure DevOps, p.50, regra V | JAR do proprio CI; CD verifica o checksum |
+| PetCenter-CD, `deploy-webapp.sh`, Azure Web App | CD apos CI/novo artefato, p.50, item 6.b e regras III/VII | Publica o JAR testado; verifica Build ID e OpenAPI |
+| Identidade federada, Website Contributor so no Web App, variable group secreto | Credenciais protegidas, p.50, regra IV; evita penalidade p.54 | CI nao recebe segredos da aplicacao; CD nao pode recriar a VM |
+| Oracle Free em VM Azure, disco persistente, VNet e NSG | Banco em nuvem, p.48-49, item 3; CRUD/SELECT p.52 | Data Pump com hash e contagens das 12 tabelas; Oracle independente do CD |
+| Proxy Nginx no ACI e imagem no ACR | Compatibilidade com a URL anterior durante a adequacao | Decisao tecnica, sem novo requisito expresso no PDF; HTTPS ate o Web App |
+| `HomeController.java`, APP_BUILD_ID e smoke HTTP | Evidenciar mudanca de codigo publicada, p.51-52 | Texto publico identifica o build implantado |
+| `azure/agent`, `start-agent.ps1`, pool PetCenter-Linux | Disponibilizar agente Linux para executar as pipelines, p.50 | Escolha de implementacao; computador e Docker Desktop devem ficar ligados |
+| `select-oracle.ps1` e roteiro CRUD | Exibir SELECT no banco em nuvem em cada operacao, p.52 | Run Command/SQLPlus sem abrir a porta Oracle para internet |
+| README, guia e diagrama numerado | Solucao, stack, componentes, personas e CI/CD, p.49 itens 1/2; diagrama p.52 | Diagrama atualizado para infraestrutura efetiva |
+| Roteiro de video e orientacao do PDF | Video p.51-52; PDF com equipe e links p.48 | Gravacao narrada pelo aluno e PDF final ainda dependem do grupo |
+
+## Historico da preparacao inicial
 
 Base: paginas fisicas 48-55 do PDF do Challenge 2026. Branch de publicacao: `prep/devops-sprint4`, a partir de `dc7c9c9`. Publicacao no GitHub autorizada pelo usuario em 04/11/2026. Os registros abaixo que mencionam ausencia de commit descrevem as etapas anteriores a essa autorizacao.
 

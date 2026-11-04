@@ -2,29 +2,34 @@
 
 API REST para acompanhar saude, humor e rotina dos pets. Centraliza o historico para tutores e clinicas e apoia a continuidade do cuidado veterinario.
 
-Stack: Java 21, Spring Boot 4.0.6, Maven Wrapper, Spring MVC, JPA/Hibernate, Bean Validation, Spring Security, JWT, Oracle JDBC, Oracle Database Free e Swagger/OpenAPI. Entrega DevOps: Azure Pipelines, Docker, Azure Container Registry (ACR), Azure Container Instances (ACI), Azure CLI e identidade gerenciada para pull no ACR.
+Stack: Java 21, Spring Boot 4.0.6, Maven Wrapper, Spring MVC, JPA/Hibernate, Bean Validation, Spring Security, JWT, Oracle JDBC e Swagger/OpenAPI. DevOps: GitHub, Azure Pipelines YAML, JUnit/Mockito, Docker, Azure Web App, Oracle Free em VM Azure, VNet, disco gerenciado, Azure CLI e autenticacao federada.
 
 ## Estado desta versao
 
-Versao candidata a entrega, com publicacao no GitHub autorizada pelo grupo. Oito testes unitarios e um teste de integracao com Oracle aprovados localmente. Em 04/11/2026 foi realizada uma publicacao manual de teste em ACI: API, login JWT e CRUD de pets e diarios aprovados com SELECTs no Oracle da Azure. A execucao real das pipelines e o deploy automatico da Sprint 4 continuam pendentes. Consulte [o passo a passo e as evidencias do teste em nuvem](docs/TESTE_NUVEM.md).
+Projeto privado [Sprint 4 – Azure DevOps](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6), processo Scrum, professor com Basic e Project Administrators. O CI executa oito testes unitarios e um teste de integracao HTTP/SQL com Oracle; o CD publica o JAR testado no Web App. A gravacao pelo grupo e o PDF final com links continuam necessarios.
 
-- [Configuracao e roteiro completo da Sprint 4](docs/SPRINT4.md)
-- [Alteracoes, razoes e requisitos correspondentes do PDF](docs/ALTERACOES_SPRINT4.md)
-- [Arquitetura proposta e fluxo CI/CD numerado](docs/arquitetura-sprint4.svg)
+- [Configuracao, acessos, evidencias e roteiro da entrega](docs/ENTREGA4_DEVOPS.md)
+- [Alteracoes e requisitos correspondentes do PDF](docs/ALTERACOES_SPRINT4.md)
+- [PetCenter-CI](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build?definitionId=1)
+- [PetCenter-CD](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build?definitionId=2)
 
-## Ambiente atual na Azure
+## Ambiente na Azure
 
-Versao candidata a entrega publicada no grupo `rg-petcenter-rm564939-sprint4`, ACI `aci-petcenter-rm564939-sprint4`. API: http://petcenter-rm564939-sprint4.brazilsouth.azurecontainer.io:8080/ . Swagger: http://petcenter-rm564939-sprint4.brazilsouth.azurecontainer.io:8080/swagger-ui.html .
+API: https://app-petcenter-rm564939-sprint4.azurewebsites.net/ . Swagger: https://app-petcenter-rm564939-sprint4.azurewebsites.net/swagger-ui.html .
 
-O banco foi preservado por exportacao/restauracao Data Pump e o CRUD foi aprovado novamente no novo endereco. A origem com nome de teste foi desativada. Consulte [a migracao e o backup](docs/MIGRACAO_NOMES.md). CI/CD remoto e persistencia duravel do Oracle continuam pendentes; o novo nome nao altera essas limitacoes.
+Grupo: `rg-petcenter-rm564939-sprint4`. O Oracle fica na VM `vm-petcenter-oracle`, em disco de dados gerenciado e rede privada. O deploy modifica somente o Web App. Os dados do ambiente anterior foram migrados com Data Pump, hash e comparacao das 12 tabelas.
+
+O endereco anterior e mantido por um proxy Nginx no ACI: http://petcenter-rm564939-sprint4.brazilsouth.azurecontainer.io:8080/ . A conexao do proxy ao Web App usa HTTPS com certificado verificado.
 
 ## Arquitetura da Sprint 4
 
-![Arquitetura proposta e fluxo CI/CD](docs/arquitetura-sprint4.svg)
+![Arquitetura e fluxo CI/CD numerado](docs/arquitetura-sprint4.svg)
 
-O desenvolvedor envia codigo ao GitHub na branch `master`. O Azure DevOps compila e executa testes unitarios e de integracao contra Oracle descartavel, publica o JAR como Pipeline Artifact e dispara o CD. O CD baixa esse artefato, verifica o checksum, cria uma imagem com tag do build, publica no ACR e atualiza um ACI exclusivo da API. O usuario acessa API/Swagger; a API usa um Oracle em nuvem separado do ciclo de deploy da aplicacao.
+O desenvolvedor envia codigo ao GitHub em `master`. O Azure DevOps executa Maven e testes contra Oracle descartavel, publica o JAR como Pipeline Artifact e inicia o CD. O CD verifica o checksum do artefato daquele CI e publica no Azure Web App por identidade federada. A API acessa o Oracle persistente pela VNet; usuarios acessam API/Swagger e o aluno confere o CRUD com SELECT no banco em nuvem.
 
-**Banco do CD definitivo: infraestrutura separada ainda pendente.** Oracle da FIAP ou Oracle em infraestrutura persistente sao opcoes previstas no PDF. O endereco JDBC precisa ser acessivel pelo ACI, com schema preparado. O Oracle descartavel do CI e o Compose local nao substituem esse banco. O grupo legado com app e Oracle juntos nao sera atualizado pelo novo script.
+O pool `PetCenter-Linux` usa um agente em container no Docker Desktop deste computador. Para executar pipelines e gravar a demonstracao, manter computador, Docker Desktop e `petcenter-azuredevops-agent` ligados. A aplicacao e o banco permanecem na Azure independentemente do agente. Veja o guia para reconstruir ou iniciar o agente.
+
+`master` e a branch do gatilho exigido no PDF; `main` acompanha a versao entregue. Alterar somente `main` nao dispara esse CI.
 
 ## Execucao local
 
@@ -68,7 +73,7 @@ A rota `/` em `HomeController.java` pode receber uma alteracao visual de codigo 
 ## Demonstracao CRUD
 
 ```powershell
-.\scripts\demo-crud-sprint4.ps1 -BaseUrl 'http://<DNS-DO-ACI>:8080'
+.\scripts\demo-crud-sprint4.ps1 -BaseUrl 'https://app-petcenter-rm564939-sprint4.azurewebsites.net'
 ```
 
 O script pausa apos cada operacao para executar e filmar o SELECT no cliente SQL conectado ao banco em nuvem. Nao imprime senha ou token. Interface REST funcionando, isoladamente, nao comprova os SELECTs exigidos.
@@ -85,4 +90,4 @@ O PDF final deve conter somente nome completo, RM e turma de cada integrante, li
 - Bruno Martins Bettio - RM564939
 - Jose Diogo Da Silva Neves - RM562341
 
-Turmas e nome do professor ainda precisam ser informados para a configuracao final.
+Turma: 2TDSA. Professor: Felipe Cavalcante Vilella de Oliveira (pf2128@fiap.com.br).

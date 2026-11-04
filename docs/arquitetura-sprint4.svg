@@ -1,1 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="860" viewBox="0 0 1280 860"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#477198"/></marker></defs><rect width="1280" height="860" fill="#f3f6fa"/><style>text{font-family:Arial,sans-serif;fill:#172b42}.title{font-size:27px;font-weight:700}.sub{font-size:15px;fill:#51677e}.label{font-size:14px;font-weight:700}.body{font-size:15px}.box{fill:white;stroke:#b6c8da;stroke-width:2}.flow{fill:none;stroke:#477198;stroke-width:2.5;marker-end:url(#arrow)}</style><text class="title" x="30" y="45">PetCenter | Arquitetura proposta - Sprint 4</text><text class="sub" x="30" y="74">Azure DevOps CI/CD - fluxo numerado - destino real do Oracle ainda a definir</text><rect class="box" x="30" y="130" width="210" height="180" rx="12"/><rect x="30" y="130" width="210" height="7" rx="3" fill="#2467a4"/><text class="label" x="45" y="162">DESENVOLVEDOR</text><text class="body" x="45" y="191">IDE / Git</text><text class="body" x="45" y="214">Java 21 + Maven</text><text class="body" x="45" y="237">Altera codigo visivel</text><text class="body" x="45" y="260">Envia para master</text><rect class="box" x="295" y="130" width="230" height="180" rx="12"/><rect x="295" y="130" width="230" height="7" rx="3" fill="#2467a4"/><text class="label" x="310" y="162">GITHUB</text><text class="body" x="310" y="191">Repositorio da aplicacao</text><text class="body" x="310" y="214">Branch master</text><text class="body" x="310" y="237">Codigo, YAML e scripts</text><rect class="box" x="580" y="130" width="300" height="180" rx="12"/><rect x="580" y="130" width="300" height="7" rx="3" fill="#2467a4"/><text class="label" x="595" y="162">AZURE PIPELINES | CI</text><text class="body" x="595" y="191">2. Checkout + build Java 21</text><text class="body" x="595" y="214">3. JUnit / Mockito + CRUD HTTP</text><text class="body" x="595" y="237">Oracle Free descartavel + SELECT</text><text class="body" x="595" y="260">Maven verify / Failsafe</text><rect class="box" x="935" y="130" width="315" height="180" rx="12"/><rect x="935" y="130" width="315" height="7" rx="3" fill="#2467a4"/><text class="label" x="950" y="162">PIPELINE ARTIFACT</text><text class="body" x="950" y="191">4. JAR testado + SHA-256</text><text class="body" x="950" y="214">Dockerfile e scripts de deploy</text><text class="body" x="950" y="237">Build ID + commit de origem</text><path class="flow" d="M240 215 H295"/><text class="label" x="243" y="195">1. push</text><path class="flow" d="M525 215 H580"/><text class="label" x="531" y="195">2. CI</text><path class="flow" d="M880 215 H935"/><text class="label" x="897" y="195">4.</text><rect class="box" x="30" y="410" width="240" height="185" rx="12"/><rect x="30" y="410" width="240" height="7" rx="3" fill="#a96d16"/><text class="label" x="45" y="442">ORACLE EM NUVEM</text><text class="body" x="45" y="471">10. Schema da aplicacao</text><text class="body" x="45" y="494">Oracle FIAP ou infraestrutura</text><text class="body" x="45" y="517">persistente separada</text><text class="body" x="45" y="540">Destino: PENDENTE</text><rect class="box" x="320" y="410" width="280" height="185" rx="12"/><rect x="320" y="410" width="280" height="7" rx="3" fill="#2467a4"/><text class="label" x="335" y="442">AZURE CONTAINER INSTANCES</text><text class="body" x="335" y="471">8. API Java 21 / Spring Boot</text><text class="body" x="335" y="494">MVC, JPA, Validation, Security</text><text class="body" x="335" y="517">JWT + JDBC + Swagger</text><text class="body" x="335" y="540">Grupo exclusivo da API</text><rect class="box" x="650" y="410" width="240" height="185" rx="12"/><rect x="650" y="410" width="240" height="7" rx="3" fill="#2467a4"/><text class="label" x="665" y="442">AZURE CONTAINER REGISTRY</text><text class="body" x="665" y="471">6. Imagem da API</text><text class="body" x="665" y="494">Tag numerada por Build ID</text><text class="body" x="665" y="517">7. Pull com identidade</text><text class="body" x="665" y="540">gerenciada + AcrPull</text><rect class="box" x="940" y="410" width="310" height="185" rx="12"/><rect x="940" y="410" width="310" height="7" rx="3" fill="#2467a4"/><text class="label" x="955" y="442">AZURE PIPELINES | CD</text><text class="body" x="955" y="471">5. Baixa artefato do CI aprovado</text><text class="body" x="955" y="494">Confere checksum do JAR</text><text class="body" x="955" y="517">Docker build sem recompilar</text><text class="body" x="955" y="540">Azure CLI + service connection</text><path class="flow" d="M1090 310 V410"/><text class="label" x="895" y="358">5. disparo automatico</text><path class="flow" d="M940 495 H890"/><text class="label" x="892" y="477">6.</text><path class="flow" d="M650 495 H600"/><text class="label" x="603" y="477">7.</text><path class="flow" d="M320 495 H270"/><text class="label" x="267" y="477">10.</text><path class="flow" d="M1090 595 V635 H460 V595"/><text class="label" x="585" y="628">8. deploy automatico + smoke HTTP</text><rect class="box" x="320" y="700" width="280" height="110" rx="12"/><rect x="320" y="700" width="280" height="7" rx="3" fill="#258a78"/><text class="label" x="335" y="732">USUARIO FINAL / TUTOR</text><text class="body" x="335" y="761">9. Acesso a API / Swagger</text><text class="body" x="335" y="784">CRUD por HTTP ou cliente REST</text><path class="flow" d="M460 700 V642"/><text class="label" x="475" y="680">9. CRUD</text><rect class="box" x="30" y="700" width="240" height="110" rx="12"/><rect x="30" y="700" width="240" height="7" rx="3" fill="#258a78"/><text class="label" x="45" y="732">ALUNO / CLIENTE SQL</text><text class="body" x="45" y="761">SELECT a cada operacao</text><text class="body" x="45" y="784">Evidencia de persistencia</text><path class="flow" d="M145 700 V595"/><text class="label" x="42" y="660">10. SELECT</text><text class="sub" x="650" y="730">Segredos: variable group protegido no Azure DevOps</text><text class="sub" x="650" y="756">JDBC / usuario / senha / JWT em secure environment variables</text><text class="sub" x="650" y="782">Banco da nuvem separado do Oracle descartavel de testes</text><text class="sub" x="30" y="840">Proposta preparada localmente. Pipelines e recursos em nuvem ainda precisam de configuracao e validacao.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100">
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#46617d"/></marker></defs>
+<rect width="1600" height="1100" fill="#f3f6fb"/>
+<g font-family="Segoe UI,Arial" fill="#172f49">
+<text x="45" y="55" font-size="32" font-weight="700">PetCenter | Entrega 4 de DevOps</text>
+<text x="45" y="88" font-size="19">Azure DevOps: Sprint4fiap / Sprint 4 – Azure DevOps | GitHub: TaikaWaititi/challengepetcenter</text>
+<rect x="45" y="135" width="235" height="125" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="65" y="168" font-size="21" font-weight="700">Desenvolvedor</text>
+<text x="65" y="200" font-size="17">Aluno / equipe 2TDSA</text>
+<text x="65" y="225" font-size="17">IDE + Git</text>
+<rect x="355" y="135" width="300" height="125" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="375" y="168" font-size="21" font-weight="700">GitHub</text>
+<text x="375" y="200" font-size="17">1. Push de codigo em master</text>
+<text x="375" y="225" font-size="17">Repositorio Git</text>
+<rect x="745" y="135" width="355" height="125" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="765" y="168" font-size="21" font-weight="700">PetCenter-CI | Azure DevOps</text>
+<text x="765" y="200" font-size="17">2. Gatilho automatico</text>
+<text x="765" y="225" font-size="17">YAML + pool PetCenter-Linux</text>
+<rect x="1180" y="135" width="370" height="125" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="1200" y="168" font-size="21" font-weight="700">Pipeline Artifact: petcenter</text>
+<text x="1200" y="200" font-size="17">5. JAR + SHA-256 + commit</text>
+<text x="1200" y="225" font-size="17">Resultados JUnit na aba Tests</text>
+<path d="M280 195L355 195" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M655 195L745 195" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M1100 195L1180 195" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="745" y="325" width="355" height="170" rx="14" fill="#e6f0fc" stroke="#a7b9ce" stroke-width="2"/>
+<text x="765" y="358" font-size="21" font-weight="700">Agente no Docker Desktop</text>
+<text x="765" y="390" font-size="17">3. Java 21 + Maven Wrapper</text>
+<text x="765" y="415" font-size="17">4. Oito testes unitarios</text>
+<text x="765" y="440" font-size="17">Um teste de integracao HTTP/SQL</text>
+<text x="765" y="465" font-size="17">Oracle descartavel na rede CI</text>
+<path d="M922 260L922 325" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="1180" y="325" width="370" height="170" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="1200" y="358" font-size="21" font-weight="700">PetCenter-CD | Azure DevOps</text>
+<text x="1200" y="390" font-size="17">6. Novo artefato inicia CD</text>
+<text x="1200" y="415" font-size="17">7. Download + conferir SHA-256</text>
+<text x="1200" y="440" font-size="17">8. Azure CLI publica o mesmo JAR</text>
+<text x="1200" y="465" font-size="17">9. Verificar Build ID + OpenAPI</text>
+<path d="M1365 260L1365 325" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="355" y="325" width="300" height="170" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="375" y="358" font-size="21" font-weight="700">Acesso protegido</text>
+<text x="375" y="390" font-size="17">GitHub service connection</text>
+<text x="375" y="415" font-size="17">Azure: identidade federada</text>
+<text x="375" y="440" font-size="17">Secrets no variable group</text>
+<text x="375" y="465" font-size="17">CD: Website Contributor</text>
+<path d="M655 400L745 400" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<text x="665" y="385" font-size="16" font-weight="700">Configuracao</text>
+<text x="45" y="555" font-size="23" font-weight="700">AZURE | rg-petcenter-rm564939-sprint4</text>
+<rect x="25" y="575" width="1550" height="400" rx="16" fill="#e9f2ed" stroke="#9ab7a4" stroke-width="2"/>
+<rect x="355" y="610" width="300" height="145" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="375" y="643" font-size="21" font-weight="700">ACI: proxy Nginx</text>
+<text x="375" y="675" font-size="17">URL anterior :8080</text>
+<text x="375" y="700" font-size="17">HTTPS para o Web App</text>
+<text x="375" y="725" font-size="17">Imagem privada no ACR</text>
+<rect x="745" y="610" width="355" height="145" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="765" y="643" font-size="21" font-weight="700">Azure Web App | Linux B1</text>
+<text x="765" y="675" font-size="17">Java 21 / Spring Boot 4</text>
+<text x="765" y="700" font-size="17">API REST + Swagger + JWT</text>
+<text x="765" y="725" font-size="17">10. CRUD pela API</text>
+<rect x="1180" y="610" width="370" height="145" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="1200" y="643" font-size="21" font-weight="700">Oracle Free em VM Azure</text>
+<text x="1200" y="675" font-size="17">Docker + disco gerenciado 32 GiB</text>
+<text x="1200" y="700" font-size="17">10.42.1.4:1521 / FREEPDB1</text>
+<text x="1200" y="725" font-size="17">VNet + NSG: acesso privado</text>
+<path d="M1365 495L1365 545" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M1365 545L1040 545" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M1040 545L1040 610" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<text x="1050" y="580" font-size="16" font-weight="700">Deploy JAR</text>
+<path d="M655 680L745 680" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M1100 680L1180 680" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<text x="1114" y="663" font-size="16" font-weight="700">JDBC</text>
+<rect x="355" y="810" width="300" height="130" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="375" y="843" font-size="21" font-weight="700">ACR + Storage privado</text>
+<text x="375" y="875" font-size="17">Imagem do proxy</text>
+<text x="375" y="900" font-size="17">Backup Data Pump migracao</text>
+<path d="M505 810L505 755" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="745" y="810" width="355" height="130" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="765" y="843" font-size="21" font-weight="700">Pessoa: aluno / avaliador</text>
+<text x="765" y="875" font-size="17">Azure Portal + VM Run Command</text>
+<text x="765" y="900" font-size="17">SQLPlus: SELECT a cada CRUD</text>
+<path d="M1100 865L1365 865" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M1365 865L1365 755" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="45" y="610" width="235" height="145" rx="14" fill="#fff" stroke="#a7b9ce" stroke-width="2"/>
+<text x="65" y="643" font-size="21" font-weight="700">Usuario</text>
+<text x="65" y="675" font-size="17">Tutor / clinica</text>
+<text x="65" y="700" font-size="17">Browser / REST</text>
+<text x="65" y="725" font-size="17">Swagger / mobile</text>
+<path d="M280 680L355 680" stroke="#46617d" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+<text x="45" y="1015" font-size="20" font-weight="700">Acesso direto HTTPS: app-petcenter-rm564939-sprint4.azurewebsites.net</text>
+<text x="45" y="1048" font-size="18">O CD altera somente a API. O Oracle e seu disco nao sao recriados. O agente local precisa estar online para executar pipelines.</text>
+</g></svg>

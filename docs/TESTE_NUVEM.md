@@ -1,3 +1,5 @@
+> Registro historico. O estado atual, acessos e pipelines estao em [Entrega 4 DevOps](ENTREGA4_DEVOPS.md). As pendencias abaixo retratam a data de cada etapa.
+
 > Atualizacao: os nomes e o endereco atuais estao no [relatorio de migracao](MIGRACAO_NOMES.md). O relato abaixo preserva o historico do primeiro teste e seus nomes anteriores.
 
 # Teste funcional em nuvem - PetCenter - 04/11/2026
