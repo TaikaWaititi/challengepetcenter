@@ -53,14 +53,14 @@ O gatilho exigido e `master`. A `main` e mantida como copia da versao entregue; 
 
 ## Execucoes verificadas
 
-- [CI 3](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=3): push automatico, nove testes aprovados e artefato publicado.
-- [CD 4](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=4): primeira execucao de inicializacao manual, conexao federada aprovada, checksum conferido e build 3 publicado. Esta execucao inicial, isoladamente, nao comprova o gatilho automatico do CD.
+- [CI 8](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=8): **Succeeded**, motivo `individualCI`, nove testes aprovados e artefato `petcenter` publicado.
+- [CD 9](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=9): **Succeeded**, motivo `resourceTrigger`, iniciado automaticamente pelo CI 8 e publicacao do build 8 no Web App.
+- CRUD da publicacao inicial: 14 verificacoes HTTP e sete SELECTs aprovados no Web App/Oracle da VM; registros de teste removidos.
+- Apos CD 9: contagens das 12 tabelas preservadas e mesmo StartedAt do Oracle, sem reinicio do container do banco.
 
-- [CI 6](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=6): `individualCI`, commit `3a655f8`, nove testes aprovados e artefato `petcenter`.
-- [CD 7](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=7): `resourceTrigger`, iniciado automaticamente pelo CI 6. O resultado definitivo fica registrado no Azure DevOps.
-- CRUD da publicacao inicial: 14 verificacoes HTTP e sete SELECTs aprovados no Web App/Oracle da VM, com exclusao dos registros de teste.
+Validacao em 04/11/2026. O Build ID publico muda nas proximas publicacoes. O CD 7 foi cancelado durante a espera do comando de publicacao e pertence ao historico; a evidencia automatica concluida utilizada e o CD 9.
 
-O deploy aguarda a conclusao do OneDeploy e a inicializacao do Web App antes de conferir o Build ID e as respostas HTTP. O proxy encaminha o cabecalho padrao Forwarded para o Swagger preservar host, porta e protocolo do endereco acessado.
+O deploy aguarda a conclusao do OneDeploy e a inicializacao do Web App antes de conferir Build ID e respostas HTTP. O proxy encaminha o cabecalho Forwarded para o Swagger preservar host, porta e protocolo do endereco acessado.
 
 ## Agente de execucao
 
