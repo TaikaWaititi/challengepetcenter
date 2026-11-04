@@ -19,7 +19,7 @@ az webapp config appsettings set -g "$RESOURCE_GROUP" -n "$WEBAPP_NAME" \
     "APP_BUILD_ID=$build_id" SPRING_JPA_HIBERNATE_DDL_AUTO=none SERVER_PORT=8080 SERVER_FORWARD_HEADERS_STRATEGY=framework \
   --only-show-errors --output none
 az webapp deploy -g "$RESOURCE_GROUP" -n "$WEBAPP_NAME" --src-path app.jar \
-  --type jar --async true --only-show-errors --output none
+  --type jar --async false --track-status true --timeout 600000 --only-show-errors --output none
 url="https://${WEBAPP_NAME}.azurewebsites.net"
 ready=false
 for ((attempt=0; attempt<120; attempt++)); do

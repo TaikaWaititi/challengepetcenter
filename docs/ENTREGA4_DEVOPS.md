@@ -56,6 +56,12 @@ O gatilho exigido e `master`. A `main` e mantida como copia da versao entregue; 
 - [CI 3](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=3): push automatico, nove testes aprovados e artefato publicado.
 - [CD 4](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=4): primeira execucao de inicializacao manual, conexao federada aprovada, checksum conferido e build 3 publicado. Esta execucao inicial, isoladamente, nao comprova o gatilho automatico do CD.
 
+- [CI 6](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=6): `individualCI`, commit `3a655f8`, nove testes aprovados e artefato `petcenter`.
+- [CD 7](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=7): `resourceTrigger`, iniciado automaticamente pelo CI 6. O resultado definitivo fica registrado no Azure DevOps.
+- CRUD da publicacao inicial: 14 verificacoes HTTP e sete SELECTs aprovados no Web App/Oracle da VM, com exclusao dos registros de teste.
+
+O deploy aguarda a conclusao do OneDeploy e a inicializacao do Web App antes de conferir o Build ID e as respostas HTTP. O proxy encaminha o cabecalho padrao Forwarded para o Swagger preservar host, porta e protocolo do endereco acessado.
+
 ## Agente de execucao
 
 O pool PetCenter-Linux usa o container `petcenter-azuredevops-agent`, no Docker Desktop deste computador. Foi necessario porque a organizacao nao tinha agente hospedado disponivel. O agente executa jobs do Azure DevOps; a aplicacao e o banco entregues continuam na Azure.
