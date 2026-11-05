@@ -89,8 +89,6 @@ O CD atua somente no Web App e não recria o Oracle nem seu disco. Os dados ante
 | Branch do gatilho CI | master |
 | Pool / environment | PetCenter-Linux / petcenter-sprint4 |
 
-**master é uma branch**; o usuário do GitHub é TaikaWaititi. A main acompanha a versão publicada. Alterar somente main não dispara esse CI. O projeto anterior de Compliance/Boards na organização RM564975 foi preservado.
-
 ## Pipelines: jobs, tasks e artefato
 
 ### CI — PetCenter-CI
