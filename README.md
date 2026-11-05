@@ -20,10 +20,10 @@ PetCenter é uma API REST para acompanhar a saúde, o humor e a rotina dos pets.
 | RM | Integrante | Turma |
 |---|---|---|
 | RM566515 | Arthur dos Santos Cabral | 2TDSA |
-| RM564975 | Julia Tiziotto Buttler | 2TDSA |
+| RM564975 | Júlia Tiziotto Buttler | 2TDSA |
 | RM566357 | Mariana Xavier Quispe | 2TDSA |
 | RM564939 | Bruno Martins Bettio | 2TDSA |
-| RM562341 | Jose Diogo Da Silva Neves | 2TDSA |
+| RM562341 | José Diogo Da Silva Neves | 2TDSA |
 
 Professor: **Felipe Cavalcante Vilella de Oliveira — pf2128@fiap.com.br**, configurado com acesso **Basic** e membro de **Project Administrators**.
 
@@ -39,7 +39,7 @@ Professor: **Felipe Cavalcante Vilella de Oliveira — pf2128@fiap.com.br**, con
 | Versionamento | Git e GitHub | Código e push na branch master |
 | CI/CD | Azure DevOps / Azure Pipelines YAML | Build, testes, artefato e deploy automático |
 | Agente | Linux em Docker Desktop, pool PetCenter-Linux | Execução dos jobs |
-| Integração no CI | Oracle Free em container Docker descartável | Teste HTTP/SQL em banco real isolado |
+| Integração no CI | Oracle Free em contêiner Docker descartável | Teste HTTP/SQL em banco real isolado |
 | Aplicação na Azure | Azure Web App Linux, plano Basic B1 | Execução do JAR publicado |
 | Banco na Azure | Oracle Database Free em Docker numa VM Azure | Persistência da aplicação |
 | Rede e disco | Azure VNet, NSG e disco gerenciado de 32 GiB | Conexão privada e dados persistentes |
@@ -68,7 +68,7 @@ O acesso principal usa HTTPS no Web App. A URL anterior, `http://petcenter-rm564
 
 ### Banco de dados em nuvem
 
-O Oracle está na VM **vm-petcenter-oracle**, no grupo **rg-petcenter-rm564939-sprint4**. O container monta `/srv/petcenter/oradata` em `/opt/oracle/oradata`; `/srv/petcenter` está em disco de dados gerenciado. A aplicação acessa FREEPDB1 em `10.42.1.4:1521` pela VNet integrada ao Web App. O NSG permite essa conexão pela subnet da aplicação e bloqueia acesso público ao banco.
+O Oracle está na VM **vm-petcenter-oracle**, no grupo **rg-petcenter-rm564939-sprint4**. O contêiner monta `/srv/petcenter/oradata` em `/opt/oracle/oradata`; `/srv/petcenter` está em disco de dados gerenciado. A aplicação acessa FREEPDB1 em `10.42.1.4:1521` pela VNet integrada ao Web App. O NSG permite essa conexão pela subnet da aplicação e bloqueia acesso público ao banco.
 
 O CD atua somente no Web App e não recria o Oracle nem seu disco. Os dados anteriores foram migrados com Data Pump, backup privado, conferência de hash e comparação das 12 tabelas. O Oracle descartável do CI serve exclusivamente aos testes.
 
@@ -147,7 +147,7 @@ Validação em **04/11/2026**, anterior a esta revisão de documentação:
 | [CD 9 — cd-20261104.3](https://dev.azure.com/Sprint4fiap/65b112f9-8fca-499e-93fc-86127fc2f2f6/_build/results?buildId=9) | Succeeded, motivo resourceTrigger, publicação automática do artefato do CI 8 |
 | Aplicação desse fluxo | Página inicial identificou build 8; API, Swagger e OpenAPI responderam HTTP 200 nas duas URLs |
 | CRUD no Web App/Oracle da VM | 14 verificações HTTP e sete SELECTs aprovados; registros de teste removidos |
-| Persistência após CD 9 | Contagens das 12 tabelas preservadas e Oracle sem reinício do container |
+| Persistência após CD 9 | Contagens das 12 tabelas preservadas e Oracle sem reinício do contêiner |
 
 O Build ID público muda nas próximas publicações. As execuções acima permanecem identificáveis. O CD 7 foi cancelado durante a espera da publicação e pertence ao histórico; a evidência automática concluída utilizada aqui é o CD 9. O vídeo deve demonstrar uma nova alteração visível no código e seu fluxo automático completo.
 
@@ -160,6 +160,8 @@ O roteiro interativo cria usuário exclusivo, autentica, realiza CRUD de pet e p
 ```powershell
 .\scripts\demo-crud-sprint4.ps1 -BaseUrl 'https://app-petcenter-rm564939-sprint4.azurewebsites.net'
 ```
+
+Após uma publicação, aguardar o CD terminar com Succeeded e a aplicação responder antes de iniciar o CRUD. O roteiro aguarda até 120 segundos por requisição e identifica a chamada em execução. Esse limite pode ser ajustado com o parâmetro TimeoutSec, de 1 a 600 segundos.
 
 Em outro terminal autenticado no Azure CLI, com permissão de Run Command na VM, substituir 123 pelo ID do pet exibido:
 
@@ -204,7 +206,7 @@ Referência: páginas físicas 48–55 do Challenge 2026, capítulo DevOps Tools
 | p.48 — Java, banco em nuvem e Azure DevOps/Azure | Descrição, stack, arquitetura e links |
 | p.49, item 1 — solução e stack | Abertura e tabela de tecnologias |
 | p.49, item 2 — arquitetura, personas, ferramentas e conexões | Diagrama e fluxo numerado 1–10 |
-| p.49, item 3 — banco permitido em nuvem | Oracle em container na VM Azure e SELECTs |
+| p.49, item 3 — banco permitido em nuvem | Oracle em contêiner na VM Azure e SELECTs |
 | p.49, item 4; p.50, item 5 — projeto e Basic do professor | Configuração do projeto e equipe |
 | p.50, item 6, regras I–VII — repositório, gatilhos, segredos, testes, artefato e deploy | YAMLs, tasks e evidências CI 8/CD 9 |
 | p.51–52 — vídeo narrado e CRUD com SELECT | Roteiro e comandos de demonstração |
@@ -218,7 +220,7 @@ Diagrama e vídeo têm, respectivamente, até 20 e 80 pontos no enunciado. A doc
 
 Os endereços localhost abaixo são exclusivos de uma instalação local opcional. As pipelines publicam a aplicação na Azure; executar o agente Docker das pipelines não inicia a API local nem disponibiliza a porta 8080 no computador.
 
-Para executar a aplicação localmente, usar Docker Desktop com Linux containers. Para executar Maven diretamente no computador, instalar também Java 21. Na pasta raiz do repositório, preparar o .env:
+Para executar a aplicação localmente, usar Docker Desktop com contêineres Linux. Para executar Maven diretamente no computador, instalar também Java 21. Na pasta raiz do repositório, preparar o .env:
 
 - Em uma instalação nova, sem .env nem volume Oracle já inicializado, executar o gerador abaixo.
 - Se o .env já existir, reutilizá-lo; o gerador não sobrescreve esse arquivo.
@@ -237,7 +239,7 @@ docker compose ps
 docker compose logs --tail 100 app
 ```
 
-O gerador cria credenciais aleatórias em .env, ignorado pelo Git. O Compose inicia o Oracle e aguarda seu healthcheck antes de iniciar o serviço app, container petcenter-api. A primeira inicialização pode levar alguns minutos. Conferir nos logs que o Spring Boot iniciou sem erro.
+O gerador cria credenciais aleatórias em .env, ignorado pelo Git. O Compose inicia o Oracle e aguarda seu healthcheck antes de iniciar o serviço app, contêiner petcenter-api. A primeira inicialização pode levar alguns minutos. Conferir nos logs que o Spring Boot iniciou sem erro.
 
 **Somente após a API local iniciar com sucesso**, acessar http://localhost:8080/ e http://localhost:8080/swagger-ui.html. Se não houver serviço escutando na porta 8080, esses links retornarão conexão recusada. Conferir os serviços e logs acima; para a entrega, utilizar os endereços da Azure.
 
@@ -260,6 +262,7 @@ Localmente o script usa porta livre; no agente, a rede Docker petcenter-ci. Rela
 O **PDF final deve conter somente** nome completo, RM e turma de cada integrante e links GitHub, YouTube e Azure DevOps. Descrição, stack, arquitetura e instruções estão neste README. Conferir o acesso do professor ao projeto e ao vídeo antes de enviar.
 
 - [Guia operacional e recursos Azure](docs/ENTREGA4_DEVOPS.md).
+- [Verificação prática dos comandos e acessos deste README](docs/VERIFICACAO_README.md).
 - [Arquivos alterados, razões e etapas do PDF](docs/ALTERACOES_SPRINT4.md).
 - [Diagrama completo](docs/arquitetura-sprint4.svg).
 

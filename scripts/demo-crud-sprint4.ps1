@@ -1,13 +1,15 @@
 param(
     [Parameter(Mandatory = $true)][string]$BaseUrl,
-    [switch]$NonInteractive
+    [switch]$NonInteractive,
+    [ValidateRange(1, 600)][int]$TimeoutSec = 120
 )
 $ErrorActionPreference = 'Stop'
 $BaseUrl = $BaseUrl.TrimEnd('/')
 if ($BaseUrl -notmatch '^https?://') { throw 'Informe uma URL HTTP(S) valida.' }
 function Invoke-Api {
     param([string]$Method, [string]$Path, [object]$Body, [string]$Token)
-    $arguments = @{ Method = $Method; Uri = "$BaseUrl$Path"; ContentType = 'application/json'; TimeoutSec = 30 }
+    Write-Host "Executando $Method $Path"
+    $arguments = @{ Method = $Method; Uri = "$BaseUrl$Path"; ContentType = 'application/json'; TimeoutSec = $TimeoutSec }
     if ($null -ne $Body) { $arguments.Body = $Body | ConvertTo-Json -Compress }
     if ($Token) { $arguments.Headers = @{ Authorization = "Bearer $Token" } }
     Invoke-RestMethod @arguments
