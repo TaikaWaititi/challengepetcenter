@@ -212,18 +212,34 @@ Referência: páginas físicas 48–55 do Challenge 2026, capítulo DevOps Tools
 
 Diagrama e vídeo têm, respectivamente, até 20 e 80 pontos no enunciado. A documentação apoia a entrega; o grupo ainda precisa produzir e revisar a gravação exigida.
 
-## Desenvolvimento e testes locais
+## Desenvolvimento local opcional e testes
 
-Requisitos: Java 21 e Docker com Linux containers. O ambiente local serve ao desenvolvimento; a demonstração avaliada utiliza a aplicação e o banco na nuvem.
+**Para acessar a versão publicada e gravar a entrega 4, use o [Swagger na Azure](https://app-petcenter-rm564939-sprint4.azurewebsites.net/swagger-ui.html) e a [API na Azure](https://app-petcenter-rm564939-sprint4.azurewebsites.net/).** Esses endereços não dependem de iniciar uma API neste computador.
+
+Os endereços localhost abaixo são exclusivos de uma instalação local opcional. As pipelines publicam a aplicação na Azure; executar o agente Docker das pipelines não inicia a API local nem disponibiliza a porta 8080 no computador.
+
+Para executar a aplicação localmente, usar Docker Desktop com Linux containers. Para executar Maven diretamente no computador, instalar também Java 21. Na pasta raiz do repositório, preparar o .env:
+
+- Em uma instalação nova, sem .env nem volume Oracle já inicializado, executar o gerador abaixo.
+- Se o .env já existir, reutilizá-lo; o gerador não sobrescreve esse arquivo.
+- Se houver volume Oracle com dados, usar as credenciais originais correspondentes. Gerar outro .env não altera as senhas gravadas nesse banco; preservar o volume e suas credenciais.
 
 ```powershell
+# Somente para a instalação local nova descrita acima:
 .\scripts\new-local-env.ps1
-docker compose up -d --build
 ```
 
-O gerador cria .env ignorado pelo Git com credenciais aleatórias e não sobrescreve arquivo existente. Alterar .env não troca credenciais de um volume Oracle já inicializado; preservar dados e credenciais existentes.
+Com o .env correto preparado, iniciar os serviços e acompanhar a aplicação:
 
-API local: http://localhost:8080/; Swagger: http://localhost:8080/swagger-ui.html.
+```powershell
+docker compose up -d --build
+docker compose ps
+docker compose logs --tail 100 app
+```
+
+O gerador cria credenciais aleatórias em .env, ignorado pelo Git. O Compose inicia o Oracle e aguarda seu healthcheck antes de iniciar o serviço app, container petcenter-api. A primeira inicialização pode levar alguns minutos. Conferir nos logs que o Spring Boot iniciou sem erro.
+
+**Somente após a API local iniciar com sucesso**, acessar http://localhost:8080/ e http://localhost:8080/swagger-ui.html. Se não houver serviço escutando na porta 8080, esses links retornarão conexão recusada. Conferir os serviços e logs acima; para a entrega, utilizar os endereços da Azure.
 
 Testes unitários:
 
