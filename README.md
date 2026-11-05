@@ -51,8 +51,6 @@ Professor: **Felipe Cavalcante Vilella de Oliveira — pf2128@fiap.com.br**, con
 
 ![Componentes, personas, conexões e fluxo CI/CD numerado](docs/arquitetura-sprint4.svg)
 
-[Abrir o diagrama completo](docs/arquitetura-sprint4.svg).
-
 Personas: **desenvolvedor/aluno**, que altera e publica código; **usuário final**, que acessa API/Swagger ou seus clientes; **aluno/avaliador**, que acompanha pipelines, Portal Azure e consultas SQL.
 
 1. Desenvolvedor faz commit e push em master no GitHub.
