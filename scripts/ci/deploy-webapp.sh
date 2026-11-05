@@ -18,8 +18,10 @@ az webapp config appsettings set -g "$RESOURCE_GROUP" -n "$WEBAPP_NAME" \
     "SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD" "JWT_SECRET=$JWT_SECRET" \
     "APP_BUILD_ID=$build_id" SPRING_JPA_HIBERNATE_DDL_AUTO=none SERVER_PORT=8080 SERVER_FORWARD_HEADERS_STRATEGY=framework \
   --only-show-errors --output none
+# O rastreamento de inicializacao do Kudu pode continuar pendente apos o app responder.
+# Enviamos o deploy e comprovamos a versao publicada pelo Build ID e smoke test abaixo.
 az webapp deploy -g "$RESOURCE_GROUP" -n "$WEBAPP_NAME" --src-path app.jar \
-  --type jar --async false --track-status true --timeout 600000 --only-show-errors --output none
+  --type jar --async true --track-status false --timeout 600000 --only-show-errors --output none
 url="https://${WEBAPP_NAME}.azurewebsites.net"
 ready=false
 for ((attempt=0; attempt<120; attempt++)); do
