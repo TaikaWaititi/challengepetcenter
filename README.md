@@ -13,7 +13,7 @@ PetCenter é uma API REST para acompanhar a saúde, o humor e a rotina dos pets.
 | API em nuvem | [Página inicial e Build ID](https://app-petcenter-rm564939-sprint4.azurewebsites.net/) |
 | Swagger em nuvem | [Swagger UI](https://app-petcenter-rm564939-sprint4.azurewebsites.net/swagger-ui.html) |
 | OpenAPI | [Especificação JSON](https://app-petcenter-rm564939-sprint4.azurewebsites.net/api-docs) |
-| Vídeo YouTube | **Pendente: inserir o link após a gravação narrada pelo grupo.** |
+| Vídeo YouTube | **Link pendente.** |
 
 ## Equipe e professor
 
@@ -124,11 +124,11 @@ O destino do deploy é **Azure Web App**, previsto no enunciado. O ACI funciona 
 - Variable group petcenter-sprint4: SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD e JWT_SECRET **secretos**; acesso somente pelo CD.
 - RESOURCE_GROUP e WEBAPP_NAME identificam o destino e não contêm credenciais.
 - CI usa credenciais descartáveis e não recebe os segredos do banco da aplicação.
-- .env, tokens, backups e arquivos de infraestrutura com credenciais ficam fora do Git. Na gravação, mostrar somente nomes das variáveis e permissões.
+- .env, tokens, backups e arquivos de infraestrutura com credenciais ficam fora do Git.
 
 ### Agente necessário às execuções
 
-O agente petcenter-azuredevops-agent roda em Docker Desktop no computador da equipe. **Computador, Docker Desktop e agente devem ficar ligados para executar pipelines e gravar o vídeo.** Aplicação e Oracle permanecem na Azure independentemente do agente.
+O agente petcenter-azuredevops-agent roda em Docker Desktop no computador da equipe. **Computador, Docker Desktop e agente devem ficar ligados para executar pipelines.** Aplicação e Oracle permanecem na Azure independentemente do agente.
 
 ```powershell
 docker ps --filter name=petcenter-azuredevops-agent
@@ -149,9 +149,9 @@ Validação em **04/11/2026**, anterior a esta revisão de documentação:
 | CRUD no Web App/Oracle da VM | 14 verificações HTTP e sete SELECTs aprovados; registros de teste removidos |
 | Persistência após CD 9 | Contagens das 12 tabelas preservadas e Oracle sem reinício do contêiner |
 
-O Build ID público muda nas próximas publicações. As execuções acima permanecem identificáveis. O CD 7 foi cancelado durante a espera da publicação e pertence ao histórico; a evidência automática concluída utilizada aqui é o CD 9. O vídeo deve demonstrar uma nova alteração visível no código e seu fluxo automático completo.
+O Build ID público muda nas próximas publicações. As execuções acima permanecem identificáveis. O CD 7 foi cancelado durante a espera da publicação e pertence ao histórico; a evidência automática concluída utilizada aqui é o CD 9.
 
-## Demonstração de CRUD e SELECT na nuvem
+## Operações CRUD e consultas SQL na nuvem
 
 Cadastro: POST /api/users. Login: POST /api/auth/login. Rotas protegidas recebem `Authorization: Bearer <token>`. CRUDs: /api/pets, /api/diarioentradas e /api/registros. Consultar payloads no Swagger.
 
@@ -179,23 +179,7 @@ O script executa SQLPlus no Oracle da **VM Azure**, sem expor senha nem abrir a 
 | Atualizar | A linha mostra o novo nome |
 | Excluir | O SELECT pelo mesmo ID retorna zero linhas |
 
-Mostrar e explicar o SELECT em **cada** etapa. Respostas HTTP isoladas não comprovam a persistência exigida. O roteiro limpa pet e usuário ao concluir com sucesso; se interrompido, consultar os IDs exibidos antes de repetir.
-
-## Roteiro do vídeo demonstrativo
-
-Preparar IDE, GitHub, Azure DevOps, Portal Azure, Swagger e terminal SQL; manter o agente online e verificar áudio/imagem.
-
-1. Apresentar a aplicação, stack e diagrama: componentes, personas, conexões e ordem do fluxo.
-2. Mostrar projeto privado, acesso Basic do professor e conexão com o repositório.
-3. Abrir YAMLs e explicar gatilhos, jobs/tasks, artefato, variáveis protegidas e destino do deploy.
-4. Alterar o texto em src/main/java/com/fiap/challengepetcenter/controller/HomeController.java, na branch master; fazer commit e push.
-5. Mostrar o **CI iniciando automaticamente** para o commit enviado. Explicar build, testes, aba Tests e artefato publicado.
-6. Mostrar o **CD iniciando automaticamente após o CI**, artefato de origem, checksum, autenticação e deploy. Não clicar em Run pipeline para demonstrar esses gatilhos.
-7. Mostrar o Web App atualizado no Portal Azure e acessar a URL pública com novo texto e Build ID.
-8. Executar CRUD completo, intercalando chamadas REST e SELECTs na nuvem para inserir, consultar, atualizar e excluir.
-9. Revisar e publicar a gravação no YouTube com acesso permitido ao professor; inserir o link neste README e no PDF.
-
-Vídeo: **mínimo 720p, áudio claro, sem legendas e explicação pela voz do aluno**, sem limite fixo de duração. Alterar somente README não substitui a mudança de código da demonstração. Gravação e PDF com link do YouTube continuam pendentes do grupo.
+O SELECT de cada etapa permite verificar a persistência no banco, além das respostas HTTP. O roteiro limpa pet e usuário ao concluir com sucesso; se interrompido, consultar os IDs exibidos antes de repetir.
 
 ## Correspondência com o enunciado
 
@@ -209,14 +193,14 @@ Referência: páginas físicas 48–55 do Challenge 2026, capítulo DevOps Tools
 | p.49, item 3 — banco permitido em nuvem | Oracle em contêiner na VM Azure e SELECTs |
 | p.49, item 4; p.50, item 5 — projeto e Basic do professor | Configuração do projeto e equipe |
 | p.50, item 6, regras I–VII — repositório, gatilhos, segredos, testes, artefato e deploy | YAMLs, tasks e evidências CI 8/CD 9 |
-| p.51–52 — vídeo narrado e CRUD com SELECT | Roteiro e comandos de demonstração |
+| p.52 — persistência das operações CRUD | Comandos REST e SELECTs na nuvem; execução verificada no relatório técnico |
 | p.48 — PDF com integrantes/turmas e links | Orientações de submissão abaixo |
 
-Diagrama e vídeo têm, respectivamente, até 20 e 80 pontos no enunciado. A documentação apoia a entrega; o grupo ainda precisa produzir e revisar a gravação exigida.
+A descrição, a stack e o diagrama atendem aos itens documentais da p.49. As configurações e evidências técnicas complementam esses itens; o vídeo e o PDF final são entregáveis separados.
 
 ## Desenvolvimento local opcional e testes
 
-**Para acessar a versão publicada e gravar a entrega 4, use o [Swagger na Azure](https://app-petcenter-rm564939-sprint4.azurewebsites.net/swagger-ui.html) e a [API na Azure](https://app-petcenter-rm564939-sprint4.azurewebsites.net/).** Esses endereços não dependem de iniciar uma API neste computador.
+**Para acessar a versão publicada da entrega 4, use o [Swagger na Azure](https://app-petcenter-rm564939-sprint4.azurewebsites.net/swagger-ui.html) e a [API na Azure](https://app-petcenter-rm564939-sprint4.azurewebsites.net/).** Esses endereços não dependem de iniciar uma API neste computador.
 
 Os endereços localhost abaixo são exclusivos de uma instalação local opcional. As pipelines publicam a aplicação na Azure; executar o agente Docker das pipelines não inicia a API local nem disponibiliza a porta 8080 no computador.
 
@@ -259,7 +243,7 @@ Localmente o script usa porta livre; no agente, a rede Docker petcenter-ci. Rela
 
 ## Submissão e documentação complementar
 
-O **PDF final deve conter somente** nome completo, RM e turma de cada integrante e links GitHub, YouTube e Azure DevOps. Descrição, stack, arquitetura e instruções estão neste README. Conferir o acesso do professor ao projeto e ao vídeo antes de enviar.
+O **PDF final deve conter somente** nome completo, RM e turma de cada integrante e links GitHub, YouTube e Azure DevOps. Descrição, stack, arquitetura e instruções estão neste README.
 
 - [Guia operacional e recursos Azure](docs/ENTREGA4_DEVOPS.md).
 - [Verificação prática dos comandos e acessos deste README](docs/VERIFICACAO_README.md).
