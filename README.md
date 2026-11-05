@@ -56,7 +56,7 @@ Personas: **desenvolvedor/aluno**, que altera e publica código; **usuário fina
 1. Desenvolvedor faz commit e push em master no GitHub.
 2. O webhook inicia automaticamente PetCenter-CI no Azure DevOps.
 3. O agente Linux seleciona Java 21 e cria um Oracle descartável na rede Docker petcenter-ci.
-4. Maven executa `clean verify -Poracle-it`: oito testes unitários e um teste de integração HTTP/SQL.
+4. Maven executa `clean verify -Poracle-it`: doze testes unitários e um teste de integração HTTP/SQL.
 5. O CI publica resultados JUnit na aba **Tests** e o Pipeline Artifact **petcenter** no Azure DevOps.
 6. O sucesso do CI em master, com o novo artefato, inicia automaticamente PetCenter-CD.
 7. O CD baixa o artefato daquela execução e confere o SHA-256 do JAR.
@@ -101,7 +101,7 @@ Configuração: [azure-pipelines.yml](azure-pipelines.yml), com gatilho por push
 | Empacotar JAR testado e scripts | app.jar, SHA256SUMS, build-id.txt, commit.txt, Dockerfile de runtime e scripts de deploy/smoke |
 | PublishPipelineArtifact@1 | Publica o artefato petcenter no Azure DevOps |
 
-Os oito testes unitários cobrem serviço de pets e JWT. A integração inicia a aplicação real, cadastra usuário, autentica, faz CRUD de pet por HTTP e confere os dados por SQL no Oracle. Ao terminar, o script remove somente o Oracle criado para aquela execução.
+Os doze testes unitários cobrem serviço de pets, JWT e tratamento de autenticação inválida. A integração inicia a aplicação real, verifica 401 sem autenticação e 403 para perfil incorreto, cadastra usuário, autentica, faz CRUD de pet por HTTP e confere os dados por SQL no Oracle. Ao terminar, o script remove somente o Oracle criado para aquela execução.
 
 ### CD — PetCenter-CD
 
@@ -154,6 +154,8 @@ O Build ID público muda nas próximas publicações. As execuções acima perma
 ## Operações CRUD e consultas SQL na nuvem
 
 Cadastro: POST /api/users. Login: POST /api/auth/login. Rotas protegidas recebem `Authorization: Bearer <token>`. CRUDs: /api/pets, /api/diarioentradas e /api/registros. Consultar payloads no Swagger.
+
+No Swagger, use o painel **Acesso ao CRUD de pets** para entrar com um usuário TUTOR ou clique em **Criar tutor de demonstração e entrar**. Esse botão cadastra um tutor exclusivo e aplica o JWT automaticamente; não cria pets. Depois, execute POST, GET, PUT e DELETE em `/api/pets`. O login pelo próprio endpoint no Swagger também aplica o token automaticamente. O botão **Sair** encerra a sessão dessa aba. Sem token válido a API retorna 401 com orientação; um perfil sem permissão retorna 403. As rotas continuam protegidas e exigem o perfil TUTOR.
 
 O roteiro interativo cria usuário exclusivo, autentica, realiza CRUD de pet e pausa em cada operação para mostrar o SELECT:
 

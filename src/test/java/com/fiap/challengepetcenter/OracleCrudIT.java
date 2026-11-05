@@ -33,6 +33,8 @@ class OracleCrudIT {
         long userId = 0;
         long petId = 0;
         try {
+            assertEquals(401, send("POST", "/api/pets", petBody("Sem login"), null, 401).get("status").asInt());
+            assertEquals(401, send("POST", "/api/pets", petBody("Token invalido"), "invalid", 401).get("status").asInt());
             var createdUser = send("POST", "/api/users", """
                     {"nome":"Tutor Integracao", "email":"%s", "senha":"%s",
                      "telefone":"11900000000", "tipoUsuario":"TUTOR"}
@@ -41,7 +43,26 @@ class OracleCrudIT {
             String token = send("POST", "/api/auth/login",
                     """
                     {"email":"%s","senha":"%s"}
-                    """.formatted(email, password), null, 200).get("token").asText();
+                    """.formatted(email, password), "invalid", 200).get("token").asText();
+            assertFalse(token.isBlank());
+            var initializer = client.send(HttpRequest.newBuilder(URI.create("http://localhost:" + port
+                    + "/swagger-ui/swagger-initializer.js")).GET().build(), HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, initializer.statusCode());
+            assertTrue(initializer.body().contains("Criar tutor de demonstracao e entrar"));
+            assertTrue(initializer.body().contains("preauthorizeApiKey"));
+            String vetEmail = "vet." + UUID.randomUUID() + "@example.test";
+            var vet = send("POST", "/api/users", """
+                    {"nome":"Veterinario Integracao", "email":"%s", "senha":"%s",
+                     "telefone":"11900000000", "tipoUsuario":"VETERINARIO"}
+                    """.formatted(vetEmail, password), null, 201);
+            try {
+                String vetToken = send("POST", "/api/auth/login", """
+                        {"email":"%s","senha":"%s"}
+                        """.formatted(vetEmail, password), null, 200).get("token").asText();
+                assertEquals(403, send("POST", "/api/pets", petBody("Perfil incorreto"), vetToken, 403).get("status").asInt());
+            } finally {
+                jdbc.update("DELETE FROM users WHERE id = ?", vet.get("id").asLong());
+            }
             String path = "/api/pets/";
             var pet = send("POST", "/api/pets", petBody("Luna CI"), token, 201);
             petId = pet.get("id").asLong();

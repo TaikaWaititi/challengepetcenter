@@ -1,6 +1,7 @@
 package com.fiap.challengepetcenter.config;
 
 import com.fiap.challengepetcenter.security.JwtAuthenticationFilter;
+import com.fiap.challengepetcenter.security.ApiAuthenticationHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 @EnableMethodSecurity
 @Configuration
@@ -29,10 +31,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ApiAuthenticationHandler authenticationHandler) throws Exception {
 
         return http
                 .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(errors -> errors
+                        .authenticationEntryPoint(authenticationHandler)
+                        .accessDeniedHandler(authenticationHandler))
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.disable())
                 )

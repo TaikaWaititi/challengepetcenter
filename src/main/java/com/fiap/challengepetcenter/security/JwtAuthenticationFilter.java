@@ -12,16 +12,30 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import io.jsonwebtoken.JwtException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final ApiAuthenticationHandler authenticationHandler;
 
-    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService,
+                                   ApiAuthenticationHandler authenticationHandler) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.authenticationHandler = authenticationHandler;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Um token antigo nao deve impedir novo login ou cadastro publico.
+        String path = request.getServletPath();
+        return "POST".equals(request.getMethod())
+                && ("/api/auth/login".equals(path) || "/api/users".equals(path));
     }
 
     @Override
@@ -40,19 +54,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        String username = jwtService.extrairUsername(token);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-        SecurityContextHolder.getContext()
-                .setAuthentication(authentication);
+        try {
+            String username = jwtService.extrairUsername(token);
+            if (username == null || username.isBlank()) {
+                throw new BadCredentialsException("Token sem usuario");
+            }
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (!userDetails.isEnabled()) {
+                throw new BadCredentialsException("Usuario inativo");
+            }
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JwtException | IllegalArgumentException | UsernameNotFoundException | BadCredentialsException exception) {
+            SecurityContextHolder.clearContext();
+            authenticationHandler.commence(request, response,
+                    new BadCredentialsException("Token invalido ou expirado", exception));
+            return;
+        }
 
         filterChain.doFilter(request, response);
     }

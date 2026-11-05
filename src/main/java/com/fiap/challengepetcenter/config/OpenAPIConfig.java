@@ -16,6 +16,8 @@ public class OpenAPIConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Challenge PetCenter API")
+                        .description("Para executar o CRUD de pets, entre com um usuario TUTOR no painel acima. "
+                                + "O login aplica o token automaticamente. Sem autenticacao: 401; perfil sem permissao: 403.")
                         .version("1.0"))
                 .components(new Components()
                         .addSecuritySchemes(
